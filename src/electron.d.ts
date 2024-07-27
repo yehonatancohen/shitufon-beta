@@ -1,0 +1,21 @@
+interface ElectronAPI {
+    fetchClientIds: (callback: (clientIds: string[]) => void) => void;
+    fetchClientList: (callback: (clients: any[]) => void) => void;
+    createClient: (clientId: string) => void;
+    connectClient: (clientId: string) => void;
+    onClientListUpdate: (callback: (clients: any[]) => void) => void;
+    sendForm: (data: any) => void;
+    startConnection: (clientId: string) => void;
+    pauseResumeSession: (clientId: string) => void;
+    stopSession: (clientId: string) => void;
+    onQRCode: (callback: (clientId: string, qr: string) => void) => void;
+    requestClientQR: (callback: (clientId: string) => void) => void;
+    statusUpdate: (callback: () => void) => void;
+    onConnected: (callback: () => void) => void;
+    fetchRunningSessions: (callback: (sessions: any[]) => void) => void;
+    removeClient: (clientId: string) => void;
+}
+
+interface Window {
+    electron: ElectronAPI;
+}
