@@ -59,6 +59,7 @@ ipcMain.handle('fetch-running-sessions', async () => {
 ipcMain.on('submit-form', (event, data) => {
     const { clientIds, speed, mainNumber, messageBody } = data;
     const rate = speed === 'slow' ? 15000 : speed === 'medium' ? 6000 : 3000; // milliseconds per message
+    
     /*
     clientIds.forEach((clientId: string) => {
         const client = clients[clientId];

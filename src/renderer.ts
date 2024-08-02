@@ -1,5 +1,5 @@
 import QRCode from 'qrcode';
-import { ClientController } from './shitufon/ClientController';
+import { parseExcelFile } from './shitufon/Excel'
 
 // Switching between tabs
 const btnSending = document.getElementById('btn-sending');
@@ -62,6 +62,25 @@ function showClientQR(clientId: string) {
     }
 }
 
+// Populate client ID select box
+function populateClientIDSelect(clients: any[]) {
+    const clientIdSelect = document.getElementById('client-ids');
+    if (!clientIdSelect) return;
+    clientIdSelect.innerHTML = ''; // Clear existing options
+
+    clients.forEach(client => {
+        const option = document.createElement('option');
+        option.value = client.id;
+        option.text = client.id;
+        clientIdSelect.appendChild(option);
+    });
+}
+
+// Fetch and populate client IDs when the client list is updated
+window.electron.onClientListUpdate(clients => {
+    populateClientIDSelect(clients);
+});
+
 // Function to render client list
 function renderClientList(clients: any[]) {
     const clientList = document.getElementById('client-list');
@@ -78,7 +97,7 @@ function renderClientList(clients: any[]) {
           </span>
           <div>
             <button class="styled-button" onclick="window.showClientInfo('${client.id}')">Info</button>
-            <button class="styled-button" onclick="window.showQRCodeMiddle('${client.id}')">Show QR</button>
+            ${client.status === 'qr' ? `<button class="styled-button" onclick="window.showQRCodeMiddle('${client.id}')">Show QR</button>` : ''}
             <button class="styled-button remove-button" onclick="window.removeClient('${client.id}')">Remove</button>
           </div>
         </div>
@@ -96,11 +115,14 @@ function removeClient(clientId: string) {
     if (confirmation) {
         window.electron.removeClient(clientId);
         window.electron.fetchClientList(renderClientList);
+        window.electron.fetchClientList(populateClientIDSelect);
     }
 }
 
 // Fetch and render client list
 window.electron.fetchClientList(renderClientList);
+window.electron.fetchClientList(populateClientIDSelect);
+
 
 (window as any).showClientInfo = showClientInfo;
 (window as any).closeClientInfo = closeClientInfo;
@@ -108,6 +130,49 @@ window.electron.fetchClientList(renderClientList);
 (window as any).showClientQR = showClientQR;
 (window as any).removeClient = removeClient;
 (window as any).showQRCodeMiddle = showQRCodeMiddle;
+
+document.getElementById('excel-file')?.addEventListener('change', event => {
+    console.log("file selected");
+    const input = event.target as HTMLInputElement;
+    const file = input.files ? input.files[0] : null;
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const data = reader.result as string;
+            let numbers = parseExcelFile(data);
+            console.log("loaded numbers: ~", numbers);
+            populatePhoneNumbers(numbers);
+        };
+        reader.readAsArrayBuffer(file);
+    }
+});
+
+function populatePhoneNumbers(phoneNumbers: string[]) {
+    const phoneNumbersContainer = document.getElementById('phone-numbers');
+    console.log("entered function");
+    if (phoneNumbersContainer) {
+        phoneNumbersContainer.innerHTML = ''; // Clear existing phone numbers
+        console.log("found container");
+        phoneNumbers.forEach(number => {
+            console.log("number: ", number);
+            const label = document.createElement('label');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = number;
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(number));
+            phoneNumbersContainer.appendChild(label);
+        });
+    }
+}
+
+document.getElementById('select-all-numbers')?.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('#phone-numbers input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        const checkboxElement = checkbox as HTMLInputElement;
+        checkboxElement.checked = true;
+    });
+});
 
 function showQRCodeMiddle(clientId: string) {
     var qrContainer = document.getElementById("qr-container-".concat(clientId));
@@ -218,6 +283,7 @@ if (newClientForm) {
         if (newClientId) {
             window.electron.createClient(newClientId);
             window.electron.fetchClientList(renderClientList);
+            window.electron.fetchClientList(populateClientIDSelect);
         }
     });
 }
@@ -232,6 +298,7 @@ window.electron.onClientListUpdate(renderClientList);
 
 window.electron.statusUpdate(() => {
     window.electron.fetchClientList(renderClientList);
+    window.electron.fetchClientList(populateClientIDSelect);
 });
 
 // Update QR code and connection status

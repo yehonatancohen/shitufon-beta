@@ -21,9 +21,9 @@ function convertPhoneNumber(number : string) {
 }
 
 // Function to parse Excel file and extract raw data
-function parseExcelFile(filePath: string): any[] {
+export function parseExcelFile(fileData: string): any[] {
     // Read the Excel file
-    const workbook: XLSX.WorkBook = XLSX.readFile(filePath);
+    const workbook: XLSX.WorkBook = XLSX.read(fileData, { type: 'buffer' });
 
     // Assume you want to read the first sheet
     const sheetName: string = workbook.SheetNames[0];
