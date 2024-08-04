@@ -10,9 +10,12 @@ interface ElectronAPI {
     stopSession: (clientId: string) => void;
     onQRCode: (callback: (clientId: string, qr: string) => void) => void;
     requestClientQR: (callback: (clientId: string) => void) => void;
+    parseExcel: (file: any) => string[];
     statusUpdate: (callback: () => void) => void;
+    clearNumbers: () => void;
     onConnected: (callback: () => void) => void;
     fetchRunningSessions: (callback: (sessions: any[]) => void) => void;
+    fetchParsedFile: (callback: (numbers: any[]) => void) => void;
     removeClient: (clientId: string) => void;
 }
 

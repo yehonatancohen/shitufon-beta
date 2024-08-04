@@ -16,7 +16,7 @@ async function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
-            nodeIntegration: false
+            nodeIntegration: true,
         }
     });
 
@@ -50,9 +50,22 @@ ipcMain.handle('fetch-client-ids', async () => {
     return Object.keys(clients);
 });
 
+// Fetch parsed excel file
+ipcMain.handle('fetch-parsed-file', async () => {
+    return main.numbers;
+});
+
 // Fetch running sessions
 ipcMain.handle('fetch-running-sessions', async () => {
     return sessions;
+});
+
+ipcMain.on('excel-parsing', (event, file) => {
+    return main.parseExcel(file);
+});
+
+ipcMain.on('clear-numbers', () => {
+    return main.numbers = [];
 });
 
 // Handle form submission

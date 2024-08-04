@@ -6,8 +6,10 @@ contextBridge.exposeInMainWorld('electron', {
     },
     createClient: (clientId: string) => ipcRenderer.send('create-client', clientId),
     connectClient: (clientId: string) => ipcRenderer.send('connect-client', clientId),
+    clearNumbers: () => ipcRenderer.send('clear-numbers'),
     onClientListUpdate: (callback: (clients: any[]) => void) => ipcRenderer.on('client-list-update', (event, clients) => callback(clients)),
     sendForm: (data: any) => ipcRenderer.send('submit-form', data),
+    parseExcel: (file: any) => ipcRenderer.send('excel-parsing', file),
     startConnection: (clientId: string) => ipcRenderer.send('start-connection', clientId),
     pauseResumeSession: (clientId: string) => ipcRenderer.send('pause-resume-session', clientId),
     stopSession: (clientId: string) => ipcRenderer.send('stop-session', clientId),
@@ -18,5 +20,8 @@ contextBridge.exposeInMainWorld('electron', {
     removeClient: (clientId: string) => ipcRenderer.send('remove-client', clientId),
     fetchRunningSessions: (callback: (sessions: any[]) => void) => {
         ipcRenderer.invoke('fetch-running-sessions').then(callback);
+    },
+    fetchParsedFile: (callback: (numbers: any[]) => void) => {
+        ipcRenderer.invoke('fetch-parsed-file').then(callback);
     }
 });

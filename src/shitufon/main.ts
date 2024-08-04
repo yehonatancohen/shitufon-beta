@@ -1,10 +1,12 @@
 import { markAsUntransferable } from 'worker_threads';
 import { BrowserWindow } from 'electron';
+import { extractPhoneNumbers } from './Excel'
 import { ClientsManager } from './ClientsManager';
 import { SessionManager } from './sessions/SessionManager';
 import fs from 'fs';
 
 export class Main {
+    public numbers: string[] = [];
     private clientIds: string[];
     private clientManager: ClientsManager;
     private sessionManager: SessionManager;
@@ -47,9 +49,14 @@ export class Main {
         return connected;
     }
 
+    public parseExcel(file: any) {
+        const number = extractPhoneNumbers(file, [], []);
+        this.numbers.push(...number);
+    }
+
     public get_clients() {
         try {
-            const clients = fs.readFileSync('src/clients.txt', 'utf-8').split('\n');
+            const clients = fs.readFileSync('src/clients.txt', 'utf-8').split('\n').map(client => client.trim());;
             this.clientIds.push(...clients.filter(client => client.trim() !== '' && !this.clientIds.includes(client)));
         } catch (error) {
             console.error('Error reading clients from file:', error);

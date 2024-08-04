@@ -1,5 +1,5 @@
+import { ipcMain } from 'electron';
 import QRCode from 'qrcode';
-import { parseExcelFile } from './shitufon/Excel'
 
 // Switching between tabs
 const btnSending = document.getElementById('btn-sending');
@@ -132,28 +132,24 @@ window.electron.fetchClientList(populateClientIDSelect);
 (window as any).showQRCodeMiddle = showQRCodeMiddle;
 
 document.getElementById('excel-file')?.addEventListener('change', event => {
-    console.log("file selected");
     const input = event.target as HTMLInputElement;
     const file = input.files ? input.files[0] : null;
     if (file) {
         const reader = new FileReader();
         reader.onload = () => {
             const data = reader.result as string;
-            let numbers = parseExcelFile(data);
-            console.log("loaded numbers: ~", numbers);
-            populatePhoneNumbers(numbers);
+            window.electron.parseExcel(data);
+            window.electron.fetchParsedFile(populatePhoneNumbers);
         };
         reader.readAsArrayBuffer(file);
     }
 });
 
-function populatePhoneNumbers(phoneNumbers: string[]) {
+function populatePhoneNumbers(numbers: string[] = []) {
     const phoneNumbersContainer = document.getElementById('phone-numbers');
-    console.log("entered function");
     if (phoneNumbersContainer) {
-        phoneNumbersContainer.innerHTML = ''; // Clear existing phone numbers
-        console.log("found container");
-        phoneNumbers.forEach(number => {
+        phoneNumbersContainer.innerHTML = '';
+        numbers.forEach(number => {
             console.log("number: ", number);
             const label = document.createElement('label');
             const checkbox = document.createElement('input');
@@ -171,6 +167,19 @@ document.getElementById('select-all-numbers')?.addEventListener('click', () => {
     checkboxes.forEach(checkbox => {
         const checkboxElement = checkbox as HTMLInputElement;
         checkboxElement.checked = true;
+    });
+});
+
+document.getElementById('clear-numbers')?.addEventListener('click', () => {
+    window.electron.clearNumbers();
+    populatePhoneNumbers();
+});
+
+document.getElementById('deselect-all-numbers')?.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('#phone-numbers input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        const checkboxElement = checkbox as HTMLInputElement;
+        checkboxElement.checked = false;
     });
 });
 
@@ -318,16 +327,6 @@ window.electron.onConnected(() => {
     const connectionStatus = document.getElementById('connection-status') as HTMLParagraphElement;
     qrCodeImage.style.display = 'none';
     connectionStatus.style.display = 'block';
-});
-
-// Fetch client IDs from the backend and populate the select elements
-window.electron.fetchClientIds((clientIds: string[]) => {
-    const clientIdsSelect = document.getElementById('client-ids') as HTMLSelectElement;
-    const clientIdDatalist = document.getElementById('client-ids-list') as HTMLDataListElement;
-    if (clientIdsSelect && clientIdDatalist) {
-        clientIdsSelect.innerHTML = clientIds.map(id => `<option value="${id}">${id}</option>`).join('');
-        clientIdDatalist.innerHTML = clientIds.map(id => `<option value="${id}">${id}</option>`).join('');
-    }
 });
 
 // Fetch running sessions from the backend and populate the sessions list

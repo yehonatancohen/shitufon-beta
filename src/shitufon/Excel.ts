@@ -21,7 +21,7 @@ function convertPhoneNumber(number : string) {
 }
 
 // Function to parse Excel file and extract raw data
-export function parseExcelFile(fileData: string): any[] {
+function parseExcelFile(fileData: string): any[] {
     // Read the Excel file
     const workbook: XLSX.WorkBook = XLSX.read(fileData, { type: 'buffer' });
 
@@ -76,40 +76,11 @@ function getFilesFromFolder(folderName: string) {
     return filePaths;
 }
 
-function extractPhoneNumbers(fileNames: string[], exclude: string[], sessionIds: string[] = []): any[]{
+function extractPhoneNumbers(filesContent: any, exclude: string[], sessionIds: string[] = []): any[]{
     let allFilesContent : any[] = [];
     let excludeContent : any[] = [];
     exclude.push(...findSessionFiles(sessionIds));
-    for (let i = 0; i < fileNames.length; i++){
-        if (fileNames[i].includes('.xlsx') || fileNames[i].includes('.xls')){
-            let data = parseExcelFile(fileNames[i]);
-            data.forEach((row: any) => {
-                row.forEach((cell: any) => {
-                    allFilesContent.push(cell);
-                });
-            });
-        }
-        else if (fileNames[i].includes('.txt') || fileNames[i].includes('.csv')){
-            let content = fs.readFileSync(fileNames[i], 'utf8');
-            allFilesContent.push(content);
-        }
-        if (!(exclude.length > 0))
-            continue;
-        for (let i = 0; i < exclude.length; i++){
-            if (exclude[i].includes('.xlsx') || exclude[i].includes('.xls')){
-                let data = parseExcelFile(exclude[i]);
-                data.forEach((row: any) => {
-                    row.forEach((cell: any) => {
-                        excludeContent.push(cell);
-                    });
-                });
-            }
-            else if (exclude[i].includes('.txt') || exclude[i].includes('.csv')){
-                let content = fs.readFileSync(exclude[i], 'utf8');
-                excludeContent.push(content);
-            }
-        }
-    }
+    allFilesContent = parseExcelFile(filesContent)
     let fileNumbers = processFile(allFilesContent);
     let totalLoaded = fileNumbers.length;
     let excludeNumbers : any[];
