@@ -69,10 +69,10 @@ ipcMain.on('clear-numbers', () => {
 });
 
 // Handle form submission
-ipcMain.on('submit-form', (event, data) => {
-    const { clientIds, speed, mainNumber, messageBody } = data;
+ipcMain.on('submit-form', async (event, data) => {
+    const {  clientIds, speed, selectedNumbers, mainNumber, messageBody } = data;
     const rate = speed === 'slow' ? 15000 : speed === 'medium' ? 6000 : 3000; // milliseconds per message
-    
+    await main.startSession(clientIds, rate, selectedNumbers, mainNumber, messageBody);
     /*
     clientIds.forEach((clientId: string) => {
         const client = clients[clientId];

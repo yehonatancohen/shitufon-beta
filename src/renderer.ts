@@ -37,11 +37,13 @@ if (sendingForm) {
         const clientIdsElement = document.getElementById('client-ids') as HTMLSelectElement;
         const clientIds = Array.from(clientIdsElement.selectedOptions).map(option => option.value);
         const speed = (document.getElementById('speed') as HTMLSelectElement).value;
+        const selectedNumbers = Array.from(document.querySelectorAll('#phone-numbers input[type="checkbox"]:checked'))
+        .map(checkbox => (checkbox as HTMLInputElement).value);
         const mainNumber = (document.getElementById('main-number') as HTMLInputElement).value;
         const messageBody = (document.getElementById('message-body') as HTMLTextAreaElement).value;
 
         // Send data to the backend
-        window.electron.sendForm({ clientIds, speed, mainNumber, messageBody });
+        window.electron.sendForm({ clientIds, speed, selectedNumbers, mainNumber, messageBody });
     });
 }
 
