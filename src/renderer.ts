@@ -6,8 +6,17 @@ const btnSending = document.getElementById('btn-sending');
 const btnConnecting = document.getElementById('btn-connecting');
 const tabSending = document.getElementById('tab-sending');
 const tabConnecting = document.getElementById('tab-connecting');
+const totalNumbersSpan = document.getElementById('total-numbers');
+const selectedNumbersSpan = document.getElementById('selected-numbers');
+
 
 const qrCodes: { [clientId: string]: string } = {};
+
+function updateSummary(selectedNumbers: string[]) {
+    if (!totalNumbersSpan || !selectedNumbersSpan) return;
+    totalNumbersSpan.textContent = `Total Numbers: ${phoneNumbers.length}`;
+    selectedNumbersSpan.textContent = `Selected Numbers: ${selectedNumbers.length}`;
+}
 
 if (btnSending && btnConnecting && tabSending && tabConnecting) {
     btnSending.addEventListener('click', () => {
@@ -45,7 +54,14 @@ if (sendingForm) {
         // Send data to the backend
         window.electron.sendForm({ clientIds, speed, selectedNumbers, mainNumber, messageBody });
     });
+    document.getElementById('select-all-numbers')?.addEventListener('click', () => {
+        const selectedNumbers = Array.from(document.querySelectorAll('#phone-numbers input[type="checkbox"]:checked'))
+        .map(checkbox => (checkbox as HTMLInputElement).value);
+        updateSummary(selectedNumbers);
+    });
 }
+
+
 
 function showClientQR(clientId: string) {
     const qrContainer = document.getElementById(`qr-container-${clientId}`);
@@ -68,20 +84,17 @@ function showClientQR(clientId: string) {
 function populateClientIDSelect(clients: any[]) {
     const clientIdSelect = document.getElementById('client-ids');
     if (!clientIdSelect) return;
+    if (clients == undefined || clients.length === 0) 
+        return clientIdSelect.innerHTML = '<option value="" disabled>No clients available</option>';
     clientIdSelect.innerHTML = ''; // Clear existing options
 
     clients.forEach(client => {
         const option = document.createElement('option');
-        option.value = client.id;
-        option.text = client.id;
+        option.value = client;
+        option.text = client;
         clientIdSelect.appendChild(option);
     });
 }
-
-// Fetch and populate client IDs when the client list is updated
-window.electron.onClientListUpdate(clients => {
-    populateClientIDSelect(clients);
-});
 
 // Function to render client list
 function renderClientList(clients: any[]) {
@@ -117,13 +130,13 @@ function removeClient(clientId: string) {
     if (confirmation) {
         window.electron.removeClient(clientId);
         window.electron.fetchClientList(renderClientList);
-        window.electron.fetchClientList(populateClientIDSelect);
+        window.electron.clientListUpdate(populateClientIDSelect);
     }
 }
 
 // Fetch and render client list
 window.electron.fetchClientList(renderClientList);
-window.electron.fetchClientList(populateClientIDSelect);
+window.electron.clientListUpdate(populateClientIDSelect);
 
 
 (window as any).showClientInfo = showClientInfo;
@@ -152,7 +165,6 @@ function populatePhoneNumbers(numbers: string[] = []) {
     if (phoneNumbersContainer) {
         phoneNumbersContainer.innerHTML = '';
         numbers.forEach(number => {
-            console.log("number: ", number);
             const label = document.createElement('label');
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
@@ -294,7 +306,7 @@ if (newClientForm) {
         if (newClientId) {
             window.electron.createClient(newClientId);
             window.electron.fetchClientList(renderClientList);
-            window.electron.fetchClientList(populateClientIDSelect);
+            window.electron.clientListUpdate(populateClientIDSelect);
         }
     });
 }
@@ -304,17 +316,13 @@ function connectClient(clientId: string) {
     window.electron.connectClient(clientId);
 }
 
-// Listen for client list updates
-window.electron.onClientListUpdate(renderClientList);
-
 window.electron.statusUpdate(() => {
     window.electron.fetchClientList(renderClientList);
-    window.electron.fetchClientList(populateClientIDSelect);
+    window.electron.clientListUpdate(populateClientIDSelect);
 });
 
 // Update QR code and connection status
 window.electron.onQRCode((clientId, qr) => {
-    console.log(`Received QR for client ${clientId}: ${qr}`);
     const qrContainer = document.getElementById(`qr-container-${clientId}`);
     if (qrContainer) {
         qrCodes[clientId] = qr;

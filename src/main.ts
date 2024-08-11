@@ -100,7 +100,12 @@ ipcMain.on('remove-client', async (event, clientId) => {
 });
 
 ipcMain.handle('fetch-client-list', async () => {
+    mainWindow.webContents.send('client-list-update');
     return main.get_clients_status();
+});
+
+ipcMain.handle('client-list-update', async () => {
+    return main.get_conntected_clients();
 });
 
 // Handle connection start

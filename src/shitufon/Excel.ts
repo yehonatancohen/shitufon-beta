@@ -101,13 +101,4 @@ function extractPhoneNumbers(filesContent: any, exclude: string[], sessionIds: s
     return fileNumbers;
 }
 
-// Example usage:
-
-async function run() {
-    const filePath: string[] = ['excel/data (1).xlsx'];
-    const exclude: string[] = ['excel/data (1).xlsx'];
-    const jsonData: any[] = await extractPhoneNumbers(filePath, exclude);
-    console.log('Parsed Excel data:', jsonData);
-}
-
 export { extractPhoneNumbers, getFilesFromFolder };

@@ -28,6 +28,12 @@ export class Main {
         }
     }
 
+    public get_conntected_clients() {
+        this.get_clients();
+        const connectedClients = this.clientIds.filter(clientId => this.clientManager.clients[clientId]?.connected);
+        return connectedClients;
+    }
+
     public get_clients_status() {
         this.get_clients();
         const clientsStatus: { id: string, status: string }[] = [];

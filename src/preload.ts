@@ -7,7 +7,9 @@ contextBridge.exposeInMainWorld('electron', {
     createClient: (clientId: string) => ipcRenderer.send('create-client', clientId),
     connectClient: (clientId: string) => ipcRenderer.send('connect-client', clientId),
     clearNumbers: () => ipcRenderer.send('clear-numbers'),
-    onClientListUpdate: (callback: (clients: any[]) => void) => ipcRenderer.on('client-list-update', (event, clients) => callback(clients)),
+    clientListUpdate: (callback: (clients: any[]) => void) => {
+        ipcRenderer.invoke('client-list-update').then(callback);
+    },
     sendForm: (data: any) => ipcRenderer.send('submit-form', data),
     parseExcel: (file: any) => ipcRenderer.send('excel-parsing', file),
     startConnection: (clientId: string) => ipcRenderer.send('start-connection', clientId),

@@ -212,6 +212,8 @@ export class ClientsManager {
 
     public async sendStatus(clientId: string, status: string) {
         const client = this.getClient(clientId);
+        if (client == undefined)
+            return
         client.setStatus(status);
         try {
             this.mainWindow.webContents.send('status-update', clientId, status);
