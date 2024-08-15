@@ -14,7 +14,7 @@ const qrCodes: { [clientId: string]: string } = {};
 
 function updateSummary(selectedNumbers: string[]) {
     if (!totalNumbersSpan || !selectedNumbersSpan) return;
-    totalNumbersSpan.textContent = `Total Numbers: ${phoneNumbers.length}`;
+    totalNumbersSpan.textContent = `Total Numbers: undefined`;
     selectedNumbersSpan.textContent = `Selected Numbers: ${selectedNumbers.length}`;
 }
 
@@ -55,6 +55,21 @@ if (sendingForm) {
         window.electron.sendForm({ clientIds, speed, selectedNumbers, mainNumber, messageBody });
     });
     document.getElementById('select-all-numbers')?.addEventListener('click', () => {
+        const selectedNumbers = Array.from(document.querySelectorAll('#phone-numbers input[type="checkbox"]:checked'))
+        .map(checkbox => (checkbox as HTMLInputElement).value);
+        updateSummary(selectedNumbers);
+    });
+    document.getElementById('clear-numbers')?.addEventListener('click', () => {
+        const selectedNumbers = Array.from(document.querySelectorAll('#phone-numbers input[type="checkbox"]:checked'))
+        .map(checkbox => (checkbox as HTMLInputElement).value);
+        updateSummary(selectedNumbers);
+    });
+    document.getElementById('deselect-all-numbers')?.addEventListener('click', () => {
+        const selectedNumbers = Array.from(document.querySelectorAll('#phone-numbers input[type="checkbox"]:checked'))
+        .map(checkbox => (checkbox as HTMLInputElement).value);
+        updateSummary(selectedNumbers);
+    });
+    document.getElementById('phone-numbers')?.addEventListener('change', () => {
         const selectedNumbers = Array.from(document.querySelectorAll('#phone-numbers input[type="checkbox"]:checked'))
         .map(checkbox => (checkbox as HTMLInputElement).value);
         updateSummary(selectedNumbers);
