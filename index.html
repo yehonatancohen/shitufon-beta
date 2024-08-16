@@ -3,269 +3,11 @@
 
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>WhatsApp Web Electron</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-
-        .tab-buttons {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ccc;
-        }
-
-        .tab-buttons button {
-            padding: 10px 20px;
-            margin: 0 10px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            background-color: #f0f0f0;
-            color: #007bff;
-            border-bottom: 2px solid transparent;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-
-        .tab-buttons button.active {
-            background-color: #fff;
-            border-bottom: 2px solid #007bff;
-            color: #000;
-        }
-
-        .tab-buttons button:hover {
-            background-color: #e0e0e0;
-        }
-
-        .tab {
-            display: none;
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .tab.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-group select,
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group select:focus,
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: #007bff;
-            outline: none;
-            z-index: 1000;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-        }
-
-        button[type="submit"],
-        #start-connection,
-        #create-client {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button[type="submit"]:hover,
-        #start-connection:hover,
-        #create-client:hover {
-            background-color: #218838;
-        }
-
-        .sessions {
-            margin-top: 20px;
-        }
-
-        .sessions ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sessions ul li {
-            background-color: #f8f9fa;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .sessions ul li button {
-            background-color: #ffc107;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .sessions ul li button:hover {
-            background-color: #e0a800;
-        }
-
-        .loading-circle {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .client-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-
-        .client-item span {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .client-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            /* Adjust space between elements */
-        }
-
-        .client-status .status-indicator {
-            margin-right: 10px;
-        }
-
-        .client-status button,
-        .styled-button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-left: 5px;
-            /* Adjust spacing between buttons */
-        }
-
-        .client-status button:hover,
-        .styled-button:hover {
-            background-color: #0056b3;
-        }
-
-        .client-info {
-            display: none;
-            position: absolute;
-            background: white;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
-        .client-info .close-button {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .client-info .close-button:hover {
-            background-color: #c82333;
-        }
-
-        .loading-circle {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            animation: spin 1s linear infinite;
-        }
-
-        .phone-numbers {
-            height: 100px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            padding: 5px;
-            box-sizing: border-box;
-        }
-
-        .phone-number {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-
-        .phone-number input[type="checkbox"] {
-            margin-right: 10px;
-        }
-
-        .phone-numbers label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -302,9 +44,9 @@
                 <label for="phone-numbers">Select Phone Numbers:</label>
                 <span id="total-numbers">Total Numbers: </span>
                 <span id="selected-numbers">Selected Numbers: </span>
-                <div id="phone-numbers" class="phone-numbers">
-                    <!-- Phone numbers will be dynamically populated here -->
-                </div>
+                <select id="phone-numbers" multiple="multiple" style="width: 100%" required>
+                    <!-- Options will be populated here -->
+                </select>
                 <button class="styled-button" id="select-all-numbers">Select All</button>
                 <button class="styled-button" id="deselect-all-numbers">Deselect All</button>
                 <button class="styled-button" id="clear-numbers">Clear Numbers</button>
@@ -319,7 +61,7 @@
             <h3>Running Sessions</h3>
             <ul id="sessions-list">
                 <!-- Session information will be populated here -->
-            </ul>
+            </ul>        
         </div>
     </div>
     <div id="tab-connecting" class="tab">
