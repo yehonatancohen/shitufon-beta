@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/select2": "^4.0.63",
     "electron": "^31.3.0",
     "patch-package": "^8.0.0",
     "puppeteer": "^22.14.0",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^18.0.0",
+    "@types/jquery": "^3.5.30",
     "@types/node": "^20.14.12",
     "@types/qrcode": "^1.5.5",
     "electron-packager": "^17.1.2",
