@@ -73,25 +73,6 @@ ipcMain.on('submit-form', async (event, data) => {
     const { clientIds, speed, selectedNumbers, mainNumber, messageBody } = data;
     const rate = speed === 'slow' ? 15000 : speed === 'medium' ? 6000 : 3000; // milliseconds per message
     await main.startSession(clientIds, rate, selectedNumbers, mainNumber, messageBody);
-    /*
-    clientIds.forEach((clientId: string) => {
-        const client = clients[clientId];
-        if (client) {
-            const session = {
-                clientId,
-                messagesSent: 0,
-                timeRunning: 0,
-                isPaused: false
-            };
-            sessions.push(session);
-            const interval = setInterval(() => {
-                if (session.isPaused) return;
-                client.sendMessage(mainNumber, messageBody).then(() => {
-                    session.messagesSent++;
-                }).catch(console.error);
-            }, rate);
-        }
-    });*/
 });
 
 ipcMain.on('remove-client', async (event, clientId) => {
