@@ -43,6 +43,10 @@ export class Session {
         return this.sessionId;
     }
 
+    public getType(){
+        return this.sessionType;
+    }
+
     protected generateId()
     {
         if (this.sessionId)

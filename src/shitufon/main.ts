@@ -34,6 +34,10 @@ export class Main {
         return connectedClients;
     }
 
+    public get_sessions_status() {
+        return this.sessionManager.getSessions();
+    }
+
     public get_clients_status() {
         this.get_clients();
         const clientsStatus: { id: string, status: string }[] = [];
@@ -89,7 +93,7 @@ export class Main {
     }
 
     public async startSession(clientdIds: string[], rate: number, numbers: string[] ,mainNumber: string, messageBody: string) {
-        await this.sessionManager.createSession("Messages", clientdIds, numbers, mainNumber, messageBody);
+        await this.sessionManager.createSession("Messages", clientdIds, numbers, mainNumber, [messageBody]);
     }
 
     public async remove_client(clientId: string) {

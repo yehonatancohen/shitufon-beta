@@ -70,7 +70,7 @@ ipcMain.on('clear-numbers', () => {
 
 // Handle form submission
 ipcMain.on('submit-form', async (event, data) => {
-    const {  clientIds, speed, selectedNumbers, mainNumber, messageBody } = data;
+    const { clientIds, speed, selectedNumbers, mainNumber, messageBody } = data;
     const rate = speed === 'slow' ? 15000 : speed === 'medium' ? 6000 : 3000; // milliseconds per message
     await main.startSession(clientIds, rate, selectedNumbers, mainNumber, messageBody);
     /*
@@ -106,6 +106,10 @@ ipcMain.handle('fetch-client-list', async () => {
 
 ipcMain.handle('client-list-update', async () => {
     return main.get_conntected_clients();
+});
+
+ipcMain.handle('fetch-sessions-list', async () => {
+    return main.get_clients_status();
 });
 
 // Handle connection start

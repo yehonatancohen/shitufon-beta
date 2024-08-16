@@ -2,6 +2,7 @@ import { ListeningSession } from "./ListeningSession";
 import { MessagesSession } from "./MessagesSession";
 import { ClientsManager } from "../ClientsManager";
 import { Session } from "./Session";
+import { start } from "repl";
 
 export class SessionManager
 {
@@ -74,6 +75,20 @@ export class SessionManager
     }
 
     public getSessions() {
+        const sessionDictionary: { [sessionId: string]: any } = {};
+        for (const session of this.sessions) {
+            let sentMessages = 0;
+            if (session.sessionType == "Messages") {
+                sentMessages = (session as MessagesSession).getSentMessage().length;
+            }
+            sessionDictionary[session.getId()] = {
+                id: session.getId(),
+                type: session.getType(),
+                clients: session.getClientIds(),
+                startTime: session.getStartTime(),
+                sentMessage: sentMessages
+            };
+        }
         return this.sessions;
     }
 
@@ -126,6 +141,7 @@ export class SessionManager
     public async createSession(sessionType: string, clientIds: string[], participants: string[] = [], ...args: any[])
     {
         this.clientsIds.push(...clientIds);
+        this.managerNumber = args[0];
         if (!this.sessionTypes[sessionType]) { ClientsManager.logManager.error(`Session type ${sessionType} not found`); return; };
         let session;
         switch(sessionType) {
@@ -133,13 +149,14 @@ export class SessionManager
                 // cm: ClientsManager, sm: SessionManager, clientIds: string[], mainNumber?: string, mainClient?: string
                 if (args.length < 1) { ClientsManager.logManager.error(`Missing main number`); return; }
                 if (args.length < 2) { ClientsManager.logManager.error(`Missing main client`); return; }
-                session = new ListeningSession(this.clientManager, this, clientIds, args[0], args[1]);
+                session = new ListeningSession(this.clientManager, this, clientIds, args[1], args[2]);
                 break;
             case "Messages":
                 // cm: ClientsManager, sm: SessionManager, clientIds: string[], phoneNumbers: string[], messageBody: string[], sleepTime?: number, every?: number, wait?: number
                 if (args.length < 1) { ClientsManager.logManager.error(`Missing phone numbers`); return; }
                 if (participants.length < 1) { ClientsManager.logManager.error(`Missing participants`); return; }
-                session = new MessagesSession(this.clientManager, this, clientIds, participants, args[0], args[1], args[2], args[3])
+                console.log(args);
+                session = new MessagesSession(this.clientManager, this, clientIds, participants, args[1], args[2], args[3], args[4])
                 break;
             default:
                 return;
