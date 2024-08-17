@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack",
     "start": "electron .",
+    "release": "electron-builder --win",
     "package": "electron-packager . MyElectronApp --platform=win32 --arch=x64 --out=dist --overwrite",
     "postinstall": "patch-package"
   },
@@ -14,7 +15,6 @@
   "license": "ISC",
   "dependencies": {
     "@types/select2": "^4.0.63",
-    "electron": "^31.3.0",
     "patch-package": "^8.0.0",
     "puppeteer": "^22.14.0",
     "qrcode": "^1.5.3",
@@ -25,13 +25,23 @@
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^18.0.0",
+    "electron": "^31.3.0",
     "@types/jquery": "^3.5.30",
     "@types/node": "^20.14.12",
     "@types/qrcode": "^1.5.5",
+    "electron-builder": "^24.13.3",
     "electron-packager": "^17.1.2",
     "ts-loader": "^9.5.1",
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4",
     "webpack-node-externals": "^3.0.0"
+  },
+  "build": {
+    "appId": "com.shitufon.app",
+    "productName": "Shitufon",
+    "publish": null,
+    "directories": {
+      "output": "release"
+    }
   }
 }

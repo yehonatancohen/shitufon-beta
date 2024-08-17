@@ -21,7 +21,7 @@ async function createWindow() {
     });
 
     
-    mainWindow.loadFile('index.html');
+    mainWindow.loadFile(path.join(__dirname, 'index.html'));
     main = new Main(mainWindow);
     await main.init();
 }
