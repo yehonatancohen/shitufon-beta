@@ -6,6 +6,7 @@ interface ElectronAPI {
     connectClient: (clientId: string) => void;
     clientListUpdate: (callback: (clients: any[]) => void) => void;
     sendForm: (data: any) => void;
+    sessionUpdate: (sessionId: string, status: string) => void;
     startConnection: (clientId: string) => void;
     pauseResumeSession: (clientId: string) => void;
     stopSession: (clientId: string) => void;

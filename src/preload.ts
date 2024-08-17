@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld('electron', {
     onQRCode: (callback: (clientId: string, qr: string) => void) => ipcRenderer.on('qr', (event, clientId, qr) => callback(clientId, qr)),
     onConnected: (callback: () => void) => ipcRenderer.on('connected', () => callback()),
     statusUpdate: (callback: () => void) => ipcRenderer.on('status-update', (event) => callback()),
+    sessionUpdate: (sessionId: string, status: string) => ipcRenderer.send('session-update', sessionId, status),
     removeClient: (clientId: string) => ipcRenderer.send('remove-client', clientId),
     fetchRunningSessions: (callback: (sessions: any[]) => void) => {
         ipcRenderer.invoke('fetch-running-sessions').then(callback);

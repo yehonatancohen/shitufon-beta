@@ -96,6 +96,18 @@ export class Main {
         await this.sessionManager.createSession("Messages", clientdIds, numbers, mainNumber, [messageBody]);
     }
 
+    public async stopSession(sessionId: string) {
+        await this.sessionManager.stopSession(sessionId);
+    }
+
+    public async pauseSession(sessionId: string) {
+        await this.sessionManager.pauseSession(sessionId);
+    }
+
+    public async resumeSession(sessionId: string) {
+        await this.sessionManager.resumeSession(sessionId);
+    }
+
     public async remove_client(clientId: string) {
         if (!this.clientIds.includes(clientId)) {
             return;

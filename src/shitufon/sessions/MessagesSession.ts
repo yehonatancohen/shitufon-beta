@@ -67,6 +67,7 @@ export class MessagesSession extends Session {
             }
             await client.sendMessage(phone_number, messages[current_messages % messages.length]);
             ClientsManager.logManager.info(`Sent message to ${phone_number} from ${client.getClientId()}`);
+            this.sessionUpdated();
             client_index = (client_index + 1) % clients.length;
             this.sentMessages.push(this.toSendMessage[current_messages]);
             this.toSendMessage.splice(current_messages, 1);
@@ -77,6 +78,8 @@ export class MessagesSession extends Session {
                 await sleep(this.wait);
             }
         }
+        this.status = SessionStatus.DONE;
+        this.sessionUpdated();
     }
 
     private initMessages()

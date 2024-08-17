@@ -1,3 +1,4 @@
+import { start } from 'repl';
 import { ClientController } from '../ClientController';
 import { ClientsManager } from '../ClientsManager';
 import { SessionManager } from './SessionManager';
@@ -6,7 +7,8 @@ export enum SessionStatus {
     STARTED,
     STOPPED,
     PAUSED,
-    RESUMED
+    RESUMED,
+    DONE
 }
 
 export class Session {
@@ -17,11 +19,13 @@ export class Session {
     protected status: SessionStatus;
     public sessionType: string;
     protected startTime: number;
+    protected timePaused: number;
     protected sessionManager: SessionManager; 
 
     constructor(cm: ClientsManager, sm: SessionManager) {
         this.cm = cm;
         this.startTime = new Date().getTime();
+        this.timePaused = this.startTime;
         this.sessionManager = sm;
         this.sessionType = "General";
         this.sessionId = this.generateId();
@@ -33,6 +37,17 @@ export class Session {
 
     public getStartTime() {
         return this.startTime;
+    }
+
+    public getStatus() {
+        if (this.status == SessionStatus.STARTED || this.status == SessionStatus.RESUMED)
+            return "Running";
+        else if (this.status == SessionStatus.STOPPED)
+            return "Stopped";
+        else if (this.status == SessionStatus.PAUSED)
+            return "Paused";
+        else if (this.status == SessionStatus.DONE)
+            return "Done";
     }
 
     public getClients() {
@@ -64,11 +79,15 @@ export class Session {
         return id;
     }
 
+    public async sessionUpdated() {
+        await this.sessionManager.sessionUpdated();
+    }
+
     public async startSession()
     {
         // start session
         this.status = SessionStatus.STARTED;
-        //await this.sessionManager.logUser(`Starting session ${this.sessionId} of type ${this.sessionType}`);
+        this.sessionUpdated();
         ClientsManager.logManager.info(`Starting session ${this.sessionId} of type ${this.sessionType}`);
     }
 
@@ -77,24 +96,27 @@ export class Session {
         return this.clientIds;
     }
 
+    public pausedTime() 
+    {
+        return this.timePaused;
+    }
+
     public async stop()
     {
         // stop session
-        await this.sessionManager.logUser(`Stopping session ${this.sessionId} of type ${this.sessionType}`)
         this.status = SessionStatus.STOPPED;
     }
 
     public async pause()
     {
         // pause session
-        await this.sessionManager.logUser(`Pausing session ${this.sessionId} of type ${this.sessionType}`);
+        this.timePaused = new Date().getTime();
         this.status = SessionStatus.PAUSED;
     }
 
     public async resume()
     {
         // resume session
-        await this.sessionManager.logUser(`Resuming session ${this.sessionId} of type ${this.sessionType}`);
         this.status = SessionStatus.RESUMED;
     }
 

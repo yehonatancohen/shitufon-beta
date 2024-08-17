@@ -80,6 +80,18 @@ ipcMain.on('remove-client', async (event, clientId) => {
     mainWindow.webContents.send('fetch-client-list', clientId);
 });
 
+ipcMain.on('session-update', async (event, sesssionId, status) => {
+    if (status === 'stopped') {
+        return await main.stopSession(sesssionId);
+    } else if (status === 'paused') {
+        return await main.pauseSession(sesssionId);
+    } else if (status === 'resumed') {
+        return await main.resumeSession(sesssionId);
+    }
+    return;
+});
+
+
 ipcMain.handle('fetch-client-list', async () => {
     mainWindow.webContents.send('client-list-update');
     return main.get_clients_status();
@@ -90,7 +102,7 @@ ipcMain.handle('client-list-update', async () => {
 });
 
 ipcMain.handle('fetch-sessions-list', async () => {
-    return main.get_clients_status();
+    return main.get_sessions_status();
 });
 
 // Handle connection start

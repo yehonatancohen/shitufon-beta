@@ -34,44 +34,12 @@ export class SessionManager
     }
 
     public async logUser(message: string) {
-        await this.clientManager.clients[this.clientsIds[0]].sendMessage(this.managerNumber, message);
-        ClientsManager.logManager.info(`Sent log message to ${this.managerNumber}: ${message}`);
+        //await this.clientManager.clients[this.clientsIds[0]].sendMessage(this.managerNumber, message);
+        //ClientsManager.logManager.info(`Sent log message to ${this.managerNumber}: ${message}`);
     }
 
-    public async sendStatus() {
-        let allSessionTypes = [];
-        const messageSessions = this.getSessionsByType("Messages");
-        const listeningSessions = this.getSessionsByType("Listening");
-        const groupSessions = this.getSessionsByType("Group");
-        const warmingSessions = this.getSessionsByType("Warming");
-        allSessionTypes.push(messageSessions);
-        allSessionTypes.push(listeningSessions);
-        allSessionTypes.push(groupSessions);
-        allSessionTypes.push(warmingSessions);
-
-        
-        const totalMessage = "";
-        let statusMessage = `Status:\n
-        running ${this.sessions.length} sessions\n`;
-        for (let sessionType of allSessionTypes) {
-            if (sessionType.length <= 0) continue;
-            statusMessage += '-----------\n';
-            statusMessage += `${sessionType.length} sessions of type ${sessionType[0].sessionType}\n`
-            for (let session of sessionType) {
-                const startTime = session.getStartTime();
-                const endTime = new Date().getTime();
-                const elapsedTimeMs = endTime - startTime;
-                const elapsedTimeMinutes = elapsedTimeMs / (1000 * 60);
-                statusMessage += `session ${session.getId()}\n
-                running for ${elapsedTimeMinutes} minutes\n
-                with ${session.getClientIds().length} clients: ${session.getClientIds().join(' ')}\n`;
-                if (session.sessionType == "Messages") {
-                    statusMessage += `Sent ${(session as MessagesSession).getSentMessage().length} messages\n`
-                }
-            }
-        }
-        await this.clientManager.clients[this.clientsIds[0]].sendMessage(this.managerNumber, statusMessage);
-        ClientsManager.logManager.info(`Sent log message to ${this.managerNumber}`);
+    public async sessionUpdated() {
+        await this.clientManager.sessionUpdated();
     }
 
     public getSessions() {
@@ -86,10 +54,12 @@ export class SessionManager
                 type: session.getType(),
                 clients: session.getClientIds(),
                 startTime: session.getStartTime(),
-                sentMessage: sentMessages
+                sentMessage: sentMessages,
+                status: session.getStatus(),
+                pausedTime: session.pausedTime(),
             };
         }
-        return this.sessions;
+        return sessionDictionary;
     }
 
     public getSession(sessionId: string) {
@@ -100,7 +70,6 @@ export class SessionManager
         let session = this.getSession(sessionId);
         if (session) {
             session.pause();
-            this.clientManager.clients[this.clientsIds[0]].sendMessage(this.managerNumber, `Session ${sessionId} paused`);
         }
     }
 
@@ -108,7 +77,6 @@ export class SessionManager
         let session = this.getSession(sessionId);
         if (session) {
             session.resume();
-            this.clientManager.clients[this.clientsIds[0]].sendMessage(this.managerNumber, `Session ${sessionId} resumed`);
         }
     }
 
@@ -116,7 +84,6 @@ export class SessionManager
         let session = this.getSession(sessionId);
         if (session) {
             session.stop();
-            this.clientManager.clients[this.clientsIds[0]].sendMessage(this.managerNumber, `Session ${sessionId} stopped`);
         }
     }
 
@@ -155,7 +122,6 @@ export class SessionManager
                 // cm: ClientsManager, sm: SessionManager, clientIds: string[], phoneNumbers: string[], messageBody: string[], sleepTime?: number, every?: number, wait?: number
                 if (args.length < 1) { ClientsManager.logManager.error(`Missing phone numbers`); return; }
                 if (participants.length < 1) { ClientsManager.logManager.error(`Missing participants`); return; }
-                console.log(args);
                 session = new MessagesSession(this.clientManager, this, clientIds, participants, args[1], args[2], args[3], args[4])
                 break;
             default:

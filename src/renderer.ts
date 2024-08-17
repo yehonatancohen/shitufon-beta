@@ -51,7 +51,6 @@ if (sendingForm) {
         const messageBody = (document.getElementById('message-body') as HTMLTextAreaElement).value;
 
         // Send data to the backend
-        console.log(messageBody);
         window.electron.sendForm({ clientIds, speed, selectedNumbers, mainNumber, messageBody });
         //window.electron.fetchSessionsList(renderSessionsList);
     });
@@ -137,14 +136,46 @@ function renderClientList(clients: any[]) {
       `).join('');
 }
 
+function updateTimer(element: any, startTime: any, status: any, pausedTime: any) {
+    let elapsedTime;
+
+    if (status === 'Paused') {
+        // When paused, use the time at which the session was paused
+        elapsedTime = pausedTime - startTime;
+    } else if (status === 'Stopped' || status === 'Done') {
+        return;
+    } else {
+        // If not paused, calculate the elapsed time normally
+        const now = Date.now();
+        elapsedTime = now - startTime;
+    }
+
+    const seconds = Math.floor((elapsedTime / 1000) % 60);
+    const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
+    const hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
+
+    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    element.textContent = formattedTime;
+}
+
 function renderSessionsList(sessions: any[]) {
-    const container = document.getElementById('running-sessions');
+    const container = document.getElementById('sessions-list');
     if (!container) return;
     container.innerHTML = ''; // Clear existing panels
-
-    sessions.forEach(sessionData => {
+    Object.values(sessions).forEach(sessionData => {
+        if (sessionData.type === 'Listening') return;
         const panel = document.createElement('div');
         panel.classList.add('session-panel');
+
+        const startTime = new Date(sessionData.startTime);
+        const currentTime = new Date();
+        const timeSinceStart = currentTime.getTime() - startTime.getTime();
+        const secondsSinceStart = Math.floor(timeSinceStart / 1000);
+        const minutesSinceStart = Math.floor(secondsSinceStart / 60);
+        const hoursSinceStart = Math.floor(minutesSinceStart / 60);
+        const daysSinceStart = Math.floor(hoursSinceStart / 24);
+
+        const timeString = `${daysSinceStart}d ${hoursSinceStart % 24}h ${minutesSinceStart % 60}m ${secondsSinceStart % 60}s`;
 
         panel.innerHTML = `
             <div class="session-header">
@@ -152,14 +183,14 @@ function renderSessionsList(sessions: any[]) {
                 <p>Type: <span>${sessionData.type}</span></p>
             </div>
             <div class="session-info">
-                <p>Time Since Start: <span>${sessionData.time}</span></p>
-                <p>Messages Sent: <span>${sessionData.messagesSent}</span></p>
-                <p>Messages Received: <span>${sessionData.messagesReceived}</span></p>
+                <p>Time Since Start: <span class="timer"></span></p>
+                <p>Messages Sent: <span>${sessionData.sentMessage}</span></p>
+                <p>Status: <span>${sessionData.status}</span></p>
             </div>
             <div class="session-controls">
-                <button class="btn btn-start">Start</button>
-                <button class="btn btn-pause">Pause</button>
-                <button class="btn btn-stop">Stop</button>
+                <button class="btn btn-start ${sessionData.id}">Start</button>
+                <button class="btn btn-pause ${sessionData.id}">Pause</button>
+                <button class="btn btn-stop ${sessionData.id}">Stop</button>
             </div>
             <div class="client-ids">
                 ${sessionData.clients.map((client: any) => `<span class="client-id">${client}</span>`).join('')}
@@ -167,6 +198,23 @@ function renderSessionsList(sessions: any[]) {
         `;
 
         container.appendChild(panel);
+
+        const timerElement = panel.querySelector('.timer');
+        setInterval(() => {
+            updateTimer(timerElement, sessionData.startTime, sessionData.status, sessionData.pausedTime);
+        }, 1000);
+
+        panel.querySelector('.btn-start')?.addEventListener('click', () => {
+            window.electron.sessionUpdate(sessionData.id, "resumed");
+        });
+
+        panel.querySelector('.btn-pause')?.addEventListener('click', () => {
+            window.electron.sessionUpdate(sessionData.id, "paused");
+        });
+
+        panel.querySelector('.btn-stop')?.addEventListener('click', () => {
+            window.electron.sessionUpdate(sessionData.id, "stopped");
+        });
     });
 }
 

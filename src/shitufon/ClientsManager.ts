@@ -195,6 +195,10 @@ export class ClientsManager {
         }
         return clients;
     }
+    
+    public sessionUpdated() {
+        this.mainWindow.webContents.send('status-update');
+    }
 
     public async qrReceived(qr: string, clientId: string) {
         this.mainWindow.webContents.send('qr', clientId, qr);
