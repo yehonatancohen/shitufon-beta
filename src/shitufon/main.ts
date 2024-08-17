@@ -1,5 +1,6 @@
 import { markAsUntransferable } from 'worker_threads';
 import { BrowserWindow } from 'electron';
+import path from 'path';
 import { extractPhoneNumbers } from './Excel'
 import { ClientsManager } from './ClientsManager';
 import { SessionManager } from './sessions/SessionManager';
@@ -12,12 +13,14 @@ export class Main {
     private sessionManager: SessionManager;
     private mainWindow: BrowserWindow;
     private mainNumber = '';
-    constructor(mainWindow: BrowserWindow) {
+    private clientsPath = '';
+    constructor(mainWindow: BrowserWindow, userDataPath: string) {
         this.mainWindow = mainWindow;
         this.clientIds = [];
-        this.clientManager = new ClientsManager(this.mainWindow);
+        this.clientManager = new ClientsManager(this.mainWindow, userDataPath);
         this.mainWindow.webContents.send('fetch-client-list');
         this.sessionManager = new SessionManager(this.clientManager, this.mainNumber, []);
+        this.clientsPath = path.join(userDataPath, 'clients.txt');
     }
     
     public async init() {
@@ -66,10 +69,11 @@ export class Main {
 
     public get_clients() {
         try {
-            const clients = fs.readFileSync('src/clients.txt', 'utf-8').split('\n').map(client => client.trim());;
+            const clients = fs.readFileSync(this.clientsPath, 'utf-8').split('\n').map(client => client.trim());
             this.clientIds.push(...clients.filter(client => client.trim() !== '' && !this.clientIds.includes(client)));
         } catch (error) {
-            console.error('Error reading clients from file:', error);
+            fs.writeFileSync(this.clientsPath, '', 'utf-8');
+            return [];
         }
         return this.clientIds;
     }
@@ -84,7 +88,7 @@ export class Main {
                 return;
             }
         } else {
-            fs.appendFileSync('src/clients.txt', `${clientId}\n`);
+            fs.appendFileSync(this.clientsPath, `${clientId}\n`);
             this.clientIds.push(clientId);
             this.mainWindow.webContents.send('fetch-client-list', clientId);
             this.sessionManager.addClient(clientId);
@@ -114,13 +118,13 @@ export class Main {
         }
         this.clientIds = this.clientIds.filter(client => client !== clientId);
         this.mainWindow.webContents.send('fetch-client-list', clientId);
-        fs.readFile('src/clients.txt', 'utf-8', (err, data) => {
+        fs.readFile(this.clientsPath, 'utf-8', (err, data) => {
             if (err) {
                 console.error('Error reading clients from file:', err);
                 return;
             }
             const updatedClients = data.replace(`${clientId}\n`, '');
-            fs.writeFile('src/clients.txt', updatedClients, 'utf-8', (err) => {
+            fs.writeFile(this.clientsPath, updatedClients, 'utf-8', (err) => {
                 if (err) {
                     console.error('Error removing client from file:', err);
                     return;

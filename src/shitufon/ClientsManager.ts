@@ -12,11 +12,13 @@ export class ClientsManager {
     static logManager: LogManager;
     public groupsObj: GroupChat[];
     private mainWindow: BrowserWindow;
+    private userDataPath: string;
 
-    constructor(mainWindow: BrowserWindow) {
+    constructor(mainWindow: BrowserWindow, userDataPath: string) {
         this.mainWindow = mainWindow;
         this.clients = {};
         this.groupsObj = [];
+        this.userDataPath = userDataPath;
         ClientsManager.logManager = new LogManager();
         ClientsManager.logManager.info("ClientsManager initialized");
     }
@@ -95,6 +97,10 @@ export class ClientsManager {
                 numbers.push(client.get_phone_number());
         }
         return numbers;
+    }
+
+    public get_user_data_path() {
+        return this.userDataPath;
     }
 
     public get_client_ids(){
@@ -196,6 +202,10 @@ export class ClientsManager {
         return clients;
     }
     
+    public getUserDataPath() {
+
+    }
+
     public sessionUpdated() {
         this.mainWindow.webContents.send('status-update');
     }

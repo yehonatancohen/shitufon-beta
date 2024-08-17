@@ -22,7 +22,7 @@ async function createWindow() {
 
     
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
-    main = new Main(mainWindow);
+    main = new Main(mainWindow, app.getPath('userData'));
     await main.init();
 }
 

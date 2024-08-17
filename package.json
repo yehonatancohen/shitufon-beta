@@ -6,9 +6,7 @@
   "scripts": {
     "build": "webpack",
     "start": "electron .",
-    "release": "electron-builder --win",
-    "package": "electron-packager . MyElectronApp --platform=win32 --arch=x64 --out=dist --overwrite",
-    "postinstall": "patch-package"
+    "release": "electron-builder --win"
   },
   "keywords": [],
   "author": "",
@@ -25,12 +23,13 @@
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^18.0.0",
-    "electron": "^31.3.0",
     "@types/jquery": "^3.5.30",
     "@types/node": "^20.14.12",
     "@types/qrcode": "^1.5.5",
+    "electron": "^31.3.0",
     "electron-builder": "^24.13.3",
     "electron-packager": "^17.1.2",
+    "html-webpack-plugin": "^5.6.0",
     "ts-loader": "^9.5.1",
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4",
