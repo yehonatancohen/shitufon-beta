@@ -324,3 +324,32 @@ button[type="submit"]:hover,
     margin-right: 5px;
     font-size: 0.8em;
 }
+
+.custom-file-upload {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-button {
+    background-color: #007BFF; /* Change to desired color */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+    margin-right: 10px; /* Space between button and file name display */
+    border: none;
+    outline: none;
+    transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+#excel-file {
+    display: none;
+}
