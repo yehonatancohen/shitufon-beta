@@ -47,11 +47,10 @@ if (sendingForm) {
         const clientIds = Array.from(clientIdsElement.selectedOptions).map(option => option.value);
         const speed = (document.getElementById('speed') as HTMLSelectElement).value;
         const selectedNumbers = $('#phone-numbers').val();
-        const mainNumber = (document.getElementById('main-number') as HTMLInputElement).value;
         const messageBody = (document.getElementById('message-body') as HTMLTextAreaElement).value;
 
         // Send data to the backend
-        window.electron.sendForm({ clientIds, speed, selectedNumbers, mainNumber, messageBody });
+        window.electron.sendForm({ clientIds, speed, selectedNumbers, messageBody });
         //window.electron.fetchSessionsList(renderSessionsList);
     });
     document.getElementById('phone-numbers')?.addEventListener('change', () => {
@@ -418,7 +417,8 @@ if (newClientForm) {
 
 // Function to connect a client
 function connectClient(clientId: string) {
-    window.electron.connectClient(clientId);
+    const mainNumber = (document.getElementById('main-number') as HTMLInputElement).value;
+    window.electron.connectClient(clientId, mainNumber);
 }
 
 window.electron.statusUpdate(() => {

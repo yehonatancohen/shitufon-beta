@@ -96,8 +96,8 @@ export class Main {
         await this.sessionManager.createSession("Listening", [clientId], [], this.mainNumber, clientId);
     }
 
-    public async startSession(clientdIds: string[], rate: number, numbers: string[] ,mainNumber: string, messageBody: string) {
-        await this.sessionManager.createSession("Messages", clientdIds, numbers, mainNumber, [messageBody]);
+    public async startSession(clientdIds: string[], rate: number, numbers: string[], messageBody: string) {
+        await this.sessionManager.createSession("Messages", clientdIds, numbers, [messageBody]);
     }
 
     public async stopSession(sessionId: string) {

@@ -108,7 +108,6 @@ export class SessionManager
     public async createSession(sessionType: string, clientIds: string[], participants: string[] = [], ...args: any[])
     {
         this.clientsIds.push(...clientIds);
-        this.managerNumber = args[0];
         if (!this.sessionTypes[sessionType]) { ClientsManager.logManager.error(`Session type ${sessionType} not found`); return; };
         let session;
         switch(sessionType) {
@@ -116,13 +115,13 @@ export class SessionManager
                 // cm: ClientsManager, sm: SessionManager, clientIds: string[], mainNumber?: string, mainClient?: string
                 if (args.length < 1) { ClientsManager.logManager.error(`Missing main number`); return; }
                 if (args.length < 2) { ClientsManager.logManager.error(`Missing main client`); return; }
-                session = new ListeningSession(this.clientManager, this, clientIds, args[1], args[2]);
+                session = new ListeningSession(this.clientManager, this, clientIds, args[0], args[1]);
                 break;
             case "Messages":
                 // cm: ClientsManager, sm: SessionManager, clientIds: string[], phoneNumbers: string[], messageBody: string[], sleepTime?: number, every?: number, wait?: number
                 if (args.length < 1) { ClientsManager.logManager.error(`Missing phone numbers`); return; }
                 if (participants.length < 1) { ClientsManager.logManager.error(`Missing participants`); return; }
-                session = new MessagesSession(this.clientManager, this, clientIds, participants, args[1], args[2], args[3], args[4])
+                session = new MessagesSession(this.clientManager, this, clientIds, participants, args[0], args[1], args[2], args[3])
                 break;
             default:
                 return;

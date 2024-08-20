@@ -13,6 +13,7 @@ async function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1000,
         height: 800,
+        icon: path.join(__dirname, 'assets', 'logo.png'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
@@ -21,7 +22,7 @@ async function createWindow() {
     });
 
     
-    mainWindow.loadFile(path.join(__dirname, 'index.html'));
+    mainWindow.loadFile('index.html');
     main = new Main(mainWindow, app.getPath('userData'));
     await main.init();
 }
@@ -70,9 +71,9 @@ ipcMain.on('clear-numbers', () => {
 
 // Handle form submission
 ipcMain.on('submit-form', async (event, data) => {
-    const { clientIds, speed, selectedNumbers, mainNumber, messageBody } = data;
+    const { clientIds, speed, selectedNumbers, messageBody } = data;
     const rate = speed === 'slow' ? 15000 : speed === 'medium' ? 6000 : 3000; // milliseconds per message
-    await main.startSession(clientIds, rate, selectedNumbers, mainNumber, messageBody);
+    await main.startSession(clientIds, rate, selectedNumbers, messageBody);
 });
 
 ipcMain.on('remove-client', async (event, clientId) => {
@@ -106,8 +107,8 @@ ipcMain.handle('fetch-sessions-list', async () => {
 });
 
 // Handle connection start
-ipcMain.on('start-connection', async (event, clientId) => {
-    await main.connect_client(clientId, "0586181898");
+ipcMain.on('start-connection', async (event, clientId, mainNumber) => {
+    await main.connect_client(clientId, mainNumber);
 });
 
 ipcMain.on('create-client', async (event, clientId) => {

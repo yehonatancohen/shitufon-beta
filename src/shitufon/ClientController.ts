@@ -22,7 +22,7 @@ export class ClientController {
         this.clientId = clientId_;
 		const wwebVersion = '2.2412.54';
 		this.clientObj = new Client({
-			 authStrategy: new LocalAuth({ clientId: clientId_, dataPath: Manager.get_user_data_path()}),
+			 authStrategy: new LocalAuth({ clientId: clientId_ }),
 			 webVersionCache: {
 				type: 'remote',
 				remotePath: `https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/${wwebVersion}.html`,

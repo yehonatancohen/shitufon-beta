@@ -28,6 +28,9 @@ module.exports = [
         resolve: {
             extensions: ['.ts', '.js']
         },
+        optimization: {
+            minimize: false
+        },
         externals: [nodeExternals()]
     },
     {
@@ -50,6 +53,9 @@ module.exports = [
         resolve: {
             extensions: ['.ts', '.js']
         },
+        optimization: {
+            minimize: false
+        },
         externals: [nodeExternals()]
     },
     {
@@ -71,6 +77,9 @@ module.exports = [
         },
         resolve: {
             extensions: ['.ts', '.js']
+        },
+        optimization: {
+            minimize: false
         }
-    }
+    },
 ];

@@ -8,7 +8,7 @@ contextBridge.exposeInMainWorld('electron', {
         ipcRenderer.invoke('fetch-sessions-list').then(callback);
     },
     createClient: (clientId: string) => ipcRenderer.send('create-client', clientId),
-    connectClient: (clientId: string) => ipcRenderer.send('connect-client', clientId),
+    connectClient: (clientId: string, mainNumber: string) => ipcRenderer.send('connect-client', clientId, mainNumber),
     clearNumbers: () => ipcRenderer.send('clear-numbers'),
     clientListUpdate: (callback: (clients: any[]) => void) => {
         ipcRenderer.invoke('client-list-update').then(callback);

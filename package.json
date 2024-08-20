@@ -14,7 +14,7 @@
   "dependencies": {
     "@types/select2": "^4.0.63",
     "patch-package": "^8.0.0",
-    "puppeteer": "^22.14.0",
+    "puppeteer": "^22.15.0",
     "qrcode": "^1.5.3",
     "typescript": "^5.5.4",
     "whatsapp-web.js": "^1.25.0",
@@ -37,10 +37,12 @@
   },
   "build": {
     "appId": "com.shitufon.app",
-    "productName": "Shitufon",
+    "productName": "שיתופון",
     "publish": null,
+    "asar": false,
     "directories": {
-      "output": "release"
+      "output": "release",
+      "buildResources": "release"
     }
   }
 }
