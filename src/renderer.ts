@@ -4,7 +4,9 @@ import QRCode from 'qrcode';
 // Switching between tabs
 const btnSending = document.getElementById('btn-sending');
 const btnConnecting = document.getElementById('btn-connecting');
+const btnClients = document.getElementById('btn-clients');
 const tabSending = document.getElementById('tab-sending');
+const tabClients = document.getElementById('tab-clients');
 const tabConnecting = document.getElementById('tab-connecting');
 const totalNumbersSpan = document.getElementById('total-numbers');
 const selectedNumbersSpan = document.getElementById('selected-numbers');
@@ -18,12 +20,14 @@ function updateSummary(selectedNumbers: string[]) {
     selectedNumbersSpan.textContent = `Selected Numbers: ${selectedNumbers.length}`;
 }
 
-if (btnSending && btnConnecting && tabSending && tabConnecting) {
+if (btnSending && btnConnecting && tabSending && tabConnecting && btnClients && tabClients) {
     btnSending.addEventListener('click', () => {
         tabSending.classList.add('active');
         tabConnecting.classList.remove('active');
         btnSending.classList.add('active');
         btnConnecting.classList.remove('active');
+        btnClients.classList.remove('active');
+        tabClients.classList.remove('active');
     });
 
     btnConnecting.addEventListener('click', () => {
@@ -31,6 +35,26 @@ if (btnSending && btnConnecting && tabSending && tabConnecting) {
         tabSending.classList.remove('active');
         btnConnecting.classList.add('active');
         btnSending.classList.remove('active');
+        btnClients.classList.remove('active');
+        tabClients.classList.remove('active');
+    });
+
+    btnConnecting.addEventListener('click', () => {
+        tabConnecting.classList.add('active');
+        tabSending.classList.remove('active');
+        btnConnecting.classList.add('active');
+        btnSending.classList.remove('active');
+        btnClients.classList.remove('active');
+        tabClients.classList.remove('active');
+    });
+
+    btnClients.addEventListener('click', () => {
+        tabClients.classList.add('active');
+        tabSending.classList.remove('active');
+        tabConnecting.classList.remove('active');
+        btnClients.classList.add('active');
+        btnSending.classList.remove('active');
+        btnConnecting.classList.remove('active');
     });
 
     // Initialize with sending tab active
