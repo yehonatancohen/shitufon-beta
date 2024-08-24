@@ -64,7 +64,7 @@ export class Main {
 
     public parseExcel(file: any) {
         //data: { mobile: string, name: string, fullName: string }[]
-        const number = extractPhoneNumbers(file, [], []).map((number) => {return { mobile: number, name: 'name', fullName: 'full name', gender: 'male' }});
+        const number = extractPhoneNumbers(file, [], []);
         this.numbersData.push(...number);
     }
 

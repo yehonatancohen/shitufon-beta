@@ -57,11 +57,14 @@ function processFile(allFilesContent: string[]): any[]{
         if (match && !allLines.has(match[0])) { // Avoid adding empty lines
             if (match.length > 1) {
                 match.forEach((line: any) => {
-                    allLines.add(convertPhoneNumber(line));
+                    let full = {mobile: convertPhoneNumber(line), name: content[1], fullname: content[1] + ' ' + content[2], gender: content[5]};
+                    allLines.add(full);
                 });
             }
-            else
-                allLines.add(convertPhoneNumber(match[0]));
+            else {
+                let full = {mobile: convertPhoneNumber(match[0]), name: content[1], fullname: content[1] + ' ' + content[2], gender: content[5]};
+                allLines.add(full);
+            }
         }
     });
 
