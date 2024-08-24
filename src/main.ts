@@ -53,7 +53,7 @@ ipcMain.handle('fetch-client-ids', async () => {
 
 // Fetch parsed excel file
 ipcMain.handle('fetch-parsed-file', async () => {
-    return main.numbers;
+    return main.numbersData;
 });
 
 // Fetch running sessions
@@ -66,7 +66,7 @@ ipcMain.on('excel-parsing', (event, file) => {
 });
 
 ipcMain.on('clear-numbers', () => {
-    return main.numbers = [];
+    return main.numbersData = [];
 });
 
 // Handle form submission

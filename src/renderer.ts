@@ -5,8 +5,10 @@ import QRCode from 'qrcode';
 const btnSending = document.getElementById('btn-sending');
 const btnConnecting = document.getElementById('btn-connecting');
 const btnClients = document.getElementById('btn-clients');
+const btnWhitelist = document.getElementById('btn-whitelist');
 const tabSending = document.getElementById('tab-sending');
 const tabClients = document.getElementById('tab-clients');
+const tabWhitelist = document.getElementById('tab-whitelist');
 const tabConnecting = document.getElementById('tab-connecting');
 const totalNumbersSpan = document.getElementById('total-numbers');
 const selectedNumbersSpan = document.getElementById('selected-numbers');
@@ -21,40 +23,27 @@ function updateSummary(selectedNumbers: string[]) {
 }
 
 if (btnSending && btnConnecting && tabSending && tabConnecting && btnClients && tabClients) {
-    btnSending.addEventListener('click', () => {
-        tabSending.classList.add('active');
-        tabConnecting.classList.remove('active');
-        btnSending.classList.add('active');
-        btnConnecting.classList.remove('active');
-        btnClients.classList.remove('active');
-        tabClients.classList.remove('active');
-    });
+    const tabs = [tabSending, tabConnecting, tabClients, tabWhitelist];
+    const buttons = [btnSending, btnConnecting, btnClients, btnWhitelist];
 
-    btnConnecting.addEventListener('click', () => {
-        tabConnecting.classList.add('active');
-        tabSending.classList.remove('active');
-        btnConnecting.classList.add('active');
-        btnSending.classList.remove('active');
-        btnClients.classList.remove('active');
-        tabClients.classList.remove('active');
-    });
+    buttons.forEach((button, index) => {
+        button?.addEventListener('click', () => {
+            tabs.forEach((tab, tabIndex) => {
+                if (tabIndex === index) {
+                    tab?.classList.add('active');
+                } else {
+                    tab?.classList.remove('active');
+                }
+            });
 
-    btnConnecting.addEventListener('click', () => {
-        tabConnecting.classList.add('active');
-        tabSending.classList.remove('active');
-        btnConnecting.classList.add('active');
-        btnSending.classList.remove('active');
-        btnClients.classList.remove('active');
-        tabClients.classList.remove('active');
-    });
-
-    btnClients.addEventListener('click', () => {
-        tabClients.classList.add('active');
-        tabSending.classList.remove('active');
-        tabConnecting.classList.remove('active');
-        btnClients.classList.add('active');
-        btnSending.classList.remove('active');
-        btnConnecting.classList.remove('active');
+            buttons.forEach((btn, btnIndex) => {
+                if (btnIndex === index) {
+                    btn?.classList.add('active');
+                } else {
+                    btn?.classList.remove('active');
+                }
+            });
+        });
     });
 
     // Initialize with sending tab active
@@ -70,30 +59,30 @@ if (sendingForm) {
         const clientIdsElement = document.getElementById('client-ids') as HTMLSelectElement;
         const clientIds = Array.from(clientIdsElement.selectedOptions).map(option => option.value);
         const speed = (document.getElementById('speed') as HTMLSelectElement).value;
-        const selectedNumbers = $('#phone-numbers').val();
+        const selectedNumbers = $('#phone-numbers-grid').val();
         const messageBody = (document.getElementById('message-body') as HTMLTextAreaElement).value;
 
         // Send data to the backend
         window.electron.sendForm({ clientIds, speed, selectedNumbers, messageBody });
         //window.electron.fetchSessionsList(renderSessionsList);
     });
-    document.getElementById('phone-numbers')?.addEventListener('change', () => {
-        const selectedNumbers = Array.from(document.querySelectorAll('#phone-numbers input[type="checkbox"]:checked'))
-        .map(checkbox => (checkbox as HTMLInputElement).value);
+    document.getElementById('phone-numbers-grid')?.addEventListener('change', () => {
+        const selectedNumbers = Array.from(document.querySelectorAll('#phone-numbers-grid input[type="checkbox"]:checked'))
+            .map(checkbox => (checkbox as HTMLInputElement).value);
         updateSummary(selectedNumbers);
     });
     document.getElementById('select-all-numbers')?.addEventListener('click', () => {
-        $('#phone-numbers > option').prop('selected', 'selected');
-        $('#phone-numbers').trigger('change');
+        $('#phone-numbers-grid > option').prop('selected', 'selected');
+        $('#phone-numbers-grid').trigger('change');
     });
-    
+
     document.getElementById('deselect-all-numbers')?.addEventListener('click', () => {
-        $('#phone-numbers > option').prop('selected', false);
-        $('#phone-numbers').trigger('change');
+        $('#phone-numbers-grid > option').prop('selected', false);
+        $('#phone-numbers-grid').trigger('change');
     });
-    
+
     document.getElementById('clear-numbers')?.addEventListener('click', () => {
-        $('#phone-numbers').empty().trigger('change');
+        $('#phone-numbers-grid').empty().trigger('change');
     });
 }
 
@@ -115,20 +104,19 @@ function showClientQR(clientId: string) {
 }
 
 // Populate client ID select box
-function populateClientIDSelect(clients: any[]) {
-    const clientIdSelect = document.getElementById('client-ids');
-    if (!clientIdSelect) return;
-    if (clients == undefined || clients.length === 0) 
-        return clientIdSelect.innerHTML = '<option value="" disabled>No clients available</option>';
-    clientIdSelect.innerHTML = ''; // Clear existing options
-
-    clients.forEach(client => {
+function populateClientIDSelect(clientIds: string[]) {
+    const clientIdsSelect = document.getElementById('client-ids') as HTMLSelectElement;
+    if (clientIdsSelect) {
+      clientIdsSelect.innerHTML = ''; // Clear existing options
+  
+      clientIds.forEach(id => {
         const option = document.createElement('option');
-        option.value = client;
-        option.text = client;
-        clientIdSelect.appendChild(option);
-    });
-}
+        option.value = id;
+        option.textContent = id;
+        clientIdsSelect.appendChild(option);
+      });
+    }
+  }
 
 // Function to render client list
 function renderClientList(clients: any[]) {
@@ -140,9 +128,9 @@ function renderClientList(clients: any[]) {
           <span class="client-status" id="status-${client.id}">
             ${client.status === 'connected' ? '<span class="status-indicator" style="color: green;"><i class="fas fa-check"></i> Connected</span>' :
             client.status === 'connecting' ? '<span class="loading-circle"></span> Connecting' :
-            client.status === 'opening' ? '<span class="loading-circle"></span> Opening Client' :
-            client.status === 'qr' ? '<span class="loading-circle"></span> Waiting for QR scan' :
-                `<button onclick="window.connectClient('${client.id}')">Connect</button>`}
+                client.status === 'opening' ? '<span class="loading-circle"></span> Opening Client' :
+                    client.status === 'qr' ? '<span class="loading-circle"></span> Waiting for QR scan' :
+                        `<button onclick="window.connectClient('${client.id}')">Connect</button>`}
           </span>
           <div>
             <button class="styled-button" onclick="window.showClientInfo('${client.id}')">Info</button>
@@ -277,35 +265,60 @@ document.getElementById('excel-file')?.addEventListener('change', event => {
     }
 });
 
-function populatePhoneNumbers1(numbers: string[] = []) {
-    const phoneNumbersContainer = document.getElementById('phone-numbers');
-    if (phoneNumbersContainer) {
-        phoneNumbersContainer.innerHTML = '';
-        numbers.forEach(number => {
-            const label = document.createElement('label');
+function populatePhoneNumbers(data: { mobile: string, name: string, fullName: string, gender: string}[] = []) {
+    const tableBody = document.querySelector('#sending-table tbody');
+    const selectAllCheckbox = document.getElementById('select-all-checkbox') as HTMLInputElement;
+
+    if (tableBody) {
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        data.forEach((item, index) => {
+            const row = document.createElement('tr');
+
+            // Checkbox
+            const cellCheckbox = document.createElement('td');
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.value = number;
-            label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(number));
-            phoneNumbersContainer.appendChild(label);
+            checkbox.value = item.mobile;
+            checkbox.classList.add('row-checkbox');
+            cellCheckbox.appendChild(checkbox);
+            row.appendChild(cellCheckbox);
+
+            // Mobile Number
+            const cellMobile = document.createElement('td');
+            cellMobile.textContent = item.mobile;
+            row.appendChild(cellMobile);
+
+            // Name
+            const cellName = document.createElement('td');
+            cellName.textContent = item.name;
+            row.appendChild(cellName);
+
+            // Full Name
+            const cellFullName = document.createElement('td');
+            cellFullName.textContent = item.fullName;
+            row.appendChild(cellFullName);
+
+            // Gender
+            const cellGender = document.createElement('td');
+            cellGender.textContent = item.gender;
+            row.appendChild(cellGender);
+
+
+            tableBody.appendChild(row);
+        });
+
+        selectAllCheckbox.addEventListener('change', () => {
+            const checkboxes = document.querySelectorAll('.row-checkbox') as NodeListOf<HTMLInputElement>;
+            checkboxes.forEach(checkbox => {
+              checkbox.checked = selectAllCheckbox.checked;
+            });
         });
     }
 }
 
-function populatePhoneNumbers(numbers: string[] = []) {
-    const select = document.getElementById('phone-numbers');
-    numbers.forEach(number => {
-        const option = document.createElement('option');
-        option.value = number;
-        option.text = number;
-        select?.appendChild(option);
-    });
-    $('#phoneNumbers').select2();
-}
-
 document.getElementById('select-all-numbers')?.addEventListener('click', () => {
-    const checkboxes = document.querySelectorAll('#phone-numbers input[type="checkbox"]');
+    const checkboxes = document.querySelectorAll('#phone-numbers-grid input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
         const checkboxElement = checkbox as HTMLInputElement;
         checkboxElement.checked = true;
@@ -318,7 +331,7 @@ document.getElementById('clear-numbers')?.addEventListener('click', () => {
 });
 
 document.getElementById('deselect-all-numbers')?.addEventListener('click', () => {
-    const checkboxes = document.querySelectorAll('#phone-numbers input[type="checkbox"]');
+    const checkboxes = document.querySelectorAll('#phone-numbers-grid input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
         const checkboxElement = checkbox as HTMLInputElement;
         checkboxElement.checked = false;
@@ -385,7 +398,7 @@ function showQRCodeMiddle(clientId: string) {
     // Append overlay to body
     document.body.appendChild(overlay);
 }
-  
+
 
 // Show client info
 function showClientInfo(clientId: string) {
@@ -483,11 +496,76 @@ window.electron.fetchRunningSessions((sessions: any[]) => {
     }
 });
 
-// Define pauseResumeSession and stopSession functions
-function pauseResumeSession(clientId: string) {
-    window.electron.pauseResumeSession(clientId);
+document.getElementById('upload-file-whitelist')?.addEventListener('change', (event) => {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+        // Implement file reading and parsing logic here
+        console.log('File selected:', file.name);
+    }
+});
+
+// Function to handle text input
+document.getElementById('parse-input')?.addEventListener('click', () => {
+    const textInput = (document.getElementById('input-text') as HTMLTextAreaElement).value;
+    const numbers = textInput.split('\n').map(num => num.trim()).filter(num => num.length > 0);
+    populateParsedNumbers(numbers);
+});
+
+// Function to populate parsed numbers
+function populateParsedNumbers(numbers: string[]) {
+    const parsedNumbersContainer = document.getElementById('parsed-numbers-list');
+    if (parsedNumbersContainer) {
+        parsedNumbersContainer.innerHTML = ''; // Clear existing numbers
+
+        numbers.forEach(number => {
+            const label = document.createElement('label');
+            const div = document.createElement('div');
+            div.className = 'phone-number';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = number;
+
+            div.appendChild(checkbox);
+            div.appendChild(document.createTextNode(number));
+            parsedNumbersContainer.appendChild(div);
+        });
+    }
 }
 
-function stopSession(clientId: string) {
-    window.electron.stopSession(clientId);
-}
+// Function to handle save parsed numbers
+document.getElementById('save-parsed-numbers')?.addEventListener('click', () => {
+    const selectedNumbers = Array.from(document.querySelectorAll('#parsed-numbers-list input[type="checkbox"]:checked'))
+        .map(checkbox => (checkbox as HTMLInputElement).value);
+    console.log('Saving selected numbers:', selectedNumbers);
+    // Implement save logic here
+});
+
+// Function to toggle edit mode
+document.getElementById('edit-whitelisted')?.addEventListener('click', () => {
+    const editButton = document.getElementById('edit-whitelisted') as HTMLButtonElement;
+    const saveButton = document.getElementById('save-whitelisted') as HTMLButtonElement;
+    const whitelistedList = document.getElementById('whitelisted-list');
+
+    if (whitelistedList) {
+        whitelistedList.querySelectorAll('.phone-number input[type="checkbox"]').forEach(checkbox => {
+            const checkboxElement = checkbox as HTMLInputElement;
+            checkboxElement.disabled = !checkboxElement.disabled;
+        });
+    }
+
+    editButton.style.display = 'none';
+    saveButton.style.display = 'inline-block';
+});
+
+// Function to handle save whitelisted numbers
+document.getElementById('save-whitelisted')?.addEventListener('click', () => {
+    const whitelistedNumbers = Array.from(document.querySelectorAll('#whitelisted-list input[type="checkbox"]'))
+        .map(checkbox => (checkbox as HTMLInputElement).value);
+    console.log('Saving whitelisted numbers:', whitelistedNumbers);
+    // Implement save logic here
+
+    // Toggle back to view mode
+    document.getElementById('edit-whitelisted')!.style.display = 'inline-block';
+    document.getElementById('save-whitelisted')!.style.display = 'none';
+});

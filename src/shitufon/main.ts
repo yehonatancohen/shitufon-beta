@@ -7,7 +7,7 @@ import { SessionManager } from './sessions/SessionManager';
 import fs from 'fs';
 
 export class Main {
-    public numbers: string[] = [];
+    public numbersData: {}[] = [];
     private clientIds: string[];
     private clientManager: ClientsManager;
     private sessionManager: SessionManager;
@@ -63,8 +63,9 @@ export class Main {
     }
 
     public parseExcel(file: any) {
-        const number = extractPhoneNumbers(file, [], []);
-        this.numbers.push(...number);
+        //data: { mobile: string, name: string, fullName: string }[]
+        const number = extractPhoneNumbers(file, [], []).map((number) => {return { mobile: number, name: 'name', fullName: 'full name', gender: 'male' }});
+        this.numbersData.push(...number);
     }
 
     public get_clients() {

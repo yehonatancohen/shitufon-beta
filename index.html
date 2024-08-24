@@ -15,6 +15,7 @@
         <button id="btn-sending" class="active">Sending</button>
         <button id="btn-connecting">Connecting</button>
         <button id="btn-clients">Clients</button>
+        <button id="btn-whitelist">Whitelist</button>
     </div>
     <div id="tab-clients" class="tab clients">
         <h2>Clients</h2>
@@ -22,6 +23,39 @@
             <!-- Client list will be populated here -->
         </div>
     </div>
+    <div id="tab-whitelist" class="tab">
+        <h2>Whitelist Management</h2>
+
+        <!-- Upload and Input Section -->
+        <div class="form-group custom-file-upload">
+                <label for="upload-file-whitelist">Upload file:</label>
+                <label for="upload-file-whitelist" class="custom-button">Upload File</label>
+                <input type="file" id="upload-file-whitelist" class="form-control" accept=".xlsx, .xls, .csv, .txt">
+            <label for="input-text">Or Input Text:</label>
+            <textarea id="input-text" class="form-control" rows="5"
+                placeholder="Enter numbers, one per line"></textarea>
+            <button class="styled-button" id="parse-input">Parse Numbers</button>
+        </div>
+
+        <!-- Parsed Numbers Section -->
+        <div id="parsed-numbers" class="form-group">
+            <h3>Parsed Numbers:</h3>
+            <!-- Parsed numbers will be dynamically populated here -->
+            <div id="parsed-numbers-list" class="phone-numbers-grid"></div>
+            <button class="styled-button" id="save-parsed-numbers">Save Selected</button>
+        </div>
+
+        <!-- Whitelisted Numbers Section -->
+        <div id="whitelisted-numbers" class="form-group">
+            <h3>Whitelisted Numbers:</h3>
+            <div id="whitelisted-list" class="phone-numbers-grid">
+                <!-- Whitelisted numbers will be dynamically populated here -->
+            </div>
+            <button class="styled-button" id="edit-whitelisted">Edit</button>
+            <button class="styled-button" id="save-whitelisted" style="display: none;">Save</button>
+        </div>
+    </div>
+
     <div id="tab-sending" class="tab active">
         <h2>Sending</h2>
         <form id="sending-form">
@@ -40,21 +74,28 @@
                 </select>
             </div>
             <div class="form-group custom-file-upload">
+                <label for="excel-file">Choose Numbers</label>
                 <label for="excel-file" class="custom-button">Upload Excel File</label>
                 <input type="file" id="excel-file" class="form-control" accept=".xlsx, .xls, .csv, .txt">
             </div>
+            <div class="table-container">
+                <table id="sending-table" class="styled-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="select-all-checkbox"></th>
+                            <th>Mobile Number</th>
+                            <th>Name</th>
+                            <th>Full Name</th>
+                            <th>Gender</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be dynamically populated here -->
+                    </tbody>
+                </table>
+            </div>
             <div class="form-group">
-                <label for="phone-numbers">Select Phone Numbers:</label>
-                <span id="total-numbers">Total Numbers: </span>
-                <span id="selected-numbers">Selected Numbers: </span>
-                <select id="phone-numbers" multiple="multiple" style="width: 100%" required>
-                    <!-- Options will be populated here -->
-                </select>
-                <button class="styled-button" id="select-all-numbers">Select All</button>
-                <button class="styled-button" id="deselect-all-numbers">Deselect All</button>
-                <button class="styled-button" id="clear-numbers">Clear Numbers</button>
-            </div>            
-            <div class="form-group">
+                <br>
                 <label for="message-body">Message Body</label>
                 <textarea id="message-body" required></textarea>
             </div>
@@ -64,7 +105,7 @@
             <h3>Running Sessions</h3>
             <ul id="sessions-list">
                 <!-- Session information will be populated here -->
-            </ul>        
+            </ul>
         </div>
     </div>
     <div id="tab-connecting" class="tab">

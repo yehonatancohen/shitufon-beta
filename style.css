@@ -226,29 +226,6 @@ button[type="submit"]:hover,
     animation: spin 1s linear infinite;
 }
 
-.phone-numbers {
-    height: 100px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    padding: 5px;
-    box-sizing: border-box;
-}
-
-.phone-number {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-}
-
-.phone-number input[type="checkbox"] {
-    margin-right: 10px;
-}
-
-.phone-numbers label {
-    display: block;
-    margin-bottom: 5px;
-}
-
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -331,7 +308,8 @@ button[type="submit"]:hover,
 }
 
 .custom-button {
-    background-color: #007BFF; /* Change to desired color */
+    background-color: #007BFF;
+    /* Change to desired color */
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
@@ -340,16 +318,170 @@ button[type="submit"]:hover,
     font-weight: bold;
     text-align: center;
     display: inline-block;
-    margin-right: 10px; /* Space between button and file name display */
+    margin-right: 10px;
+    /* Space between button and file name display */
     border: none;
     outline: none;
     transition: background-color 0.3s ease;
 }
 
 .custom-button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+    background-color: #0056b3;
+    /* Darker shade on hover */
 }
 
-#excel-file {
+#excel-file, #upload-file-whitelist {
     display: none;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+}
+
+.styled-button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 5px;
+}
+
+.styled-button:hover {
+    background-color: #0056b3;
+}
+
+.phone-numbers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    overflow-y: auto;
+    max-height: 200px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.phone-number {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.phone-number.selected {
+    background-color: #007BFF;
+    color: white;
+}
+
+.phone-number input[type="checkbox"] {
+    margin-right: 10px;
+    accent-color: #007BFF;
+}
+
+.styled-button {
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.styled-button:hover {
+    background-color: #0056b3;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 16px;
+    /* Increase font size */
+    font-family: Arial, sans-serif;
+    /* Change font family */
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.table-container {
+    max-height: 400px;
+    /* Adjust height as needed */
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+
+.styled-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    text-align: center; /* Center align the checkbox */
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f9f9f9;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #007BFF;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #007BFF;
+}
+
+/* Footer Status */
+.status-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background-color: #f9f9f9;
+    font-size: 14px;
+}
+
+.status-footer span {
+    margin-right: 10px;
+}
+
+.status-footer .not-sent {
+    color: red;
+}
+
+.styled-table th:first-child,
+.styled-table td:first-child {
+  width: 40px; /* Fixed width for the checkbox column */
+  text-align: center;
+}
+
+.styled-table th input[type="checkbox"],
+.styled-table td input[type="checkbox"] {
+  width: 22px; /* Bigger size for the checkbox */
+  height: 22px; /* Bigger size for the checkbox */
+  cursor: pointer;
+  accent-color: #007BFF; /* Use a blue color for the checkbox */
+  border-radius: 4px; /* Add rounded corners to the checkbox */
 }
