@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { ClientsManager } from './ClientsManager';
 
-function convertPhoneNumber(number : string) {
+function convertPhoneNumber(number: string) {
     // Implement phone number conversion logic here
     number = number.replace(/\W/g, '');
     let convertedNumbers;
@@ -11,8 +11,7 @@ function convertPhoneNumber(number : string) {
         convertedNumbers = '+972' + number.substring(1);
     } else if (number.startsWith('+972')) {
         convertedNumbers = number;
-    } else if (number.startsWith('972'))
-    {
+    } else if (number.startsWith('972')) {
         convertedNumbers = '+' + number;
     } else {
         convertedNumbers = '+972' + number;
@@ -48,23 +47,27 @@ function findSessionFiles(sessionIds: string[]) {
     return logFiles;
 }
 
-function processFile(allFilesContent: string[]): any[]{
+function locatePositions(allFilesContent: any[]) {
+    const headerRow = allFilesContent[0];
+    const first_name_titles = ['firstname', 'first name', 'first-name', 'first_name', 'name'];
+    const last_name_titles = ['lastname', 'last name', 'last-name', 'last_name'];
+    const gender_titles = ['gender', 'מגדר'];
+    const firstnameIndex = headerRow.indexOf(first_name_titles.find(title => headerRow.includes(title)));
+    const lastnameIndex = headerRow.indexOf(last_name_titles.find(title => headerRow.includes(title)));
+    const genderIndex = headerRow.indexOf(gender_titles.find(title => headerRow.includes(title)));
+    return { firstname: firstnameIndex, lastname: lastnameIndex, gender: genderIndex };
+}
+
+function processFile(allFilesContent: string[]): any[] {
     let allLines = new Set(); // Use a set to automatically remove duplicates
+    const indexes = locatePositions(allFilesContent);
 
     // Iterate over each file's content
     allFilesContent.forEach(content => {
-        const match = content.toString().match(/(?:\+972|0)?(?:-)?(?:5[0-9])(?:-)?(?:\d(?:-)?){7}/g);
+        const match = content.toString().match(/\b(?:\+972|0)?(?:-)?(?:5[0-9])(?:-)?(?:\d(?:-)?){7}\b(?![\w\s])/g);
         if (match && !allLines.has(match[0])) { // Avoid adding empty lines
-            if (match.length > 1) {
-                match.forEach((line: any) => {
-                    let full = {mobile: convertPhoneNumber(line), name: content[1], fullname: content[1] + ' ' + content[2], gender: content[5]};
-                    allLines.add(full);
-                });
-            }
-            else {
-                let full = {mobile: convertPhoneNumber(match[0]), name: content[1], fullname: content[1] + ' ' + content[2], gender: content[5]};
-                allLines.add(full);
-            }
+            let full = { mobile: convertPhoneNumber(match[0]), name: content[indexes.firstname].split(' ', 0), fullname: content[indexes.firstname] + ' ' + content[indexes.lastname], gender: content[indexes.gender] };
+            allLines.add(full);
         }
     });
 
@@ -79,26 +82,25 @@ function getFilesFromFolder(folderName: string) {
     return filePaths;
 }
 
-function extractPhoneNumbers(filesContent: any, exclude: string[], sessionIds: string[] = []): any[]{
-    let allFilesContent : any[] = [];
-    let excludeContent : any[] = [];
+function extractPhoneNumbers(filesContent: any, exclude: string[], sessionIds: string[] = []): any[] {
+    let allFilesContent: any[] = [];
+    let excludeContent: any[] = [];
     exclude.push(...findSessionFiles(sessionIds));
     allFilesContent = parseExcelFile(filesContent)
     let fileNumbers = processFile(allFilesContent);
     let totalLoaded = fileNumbers.length;
-    let excludeNumbers : any[];
+    let excludeNumbers: any[];
     const initialLength = fileNumbers.length;
     let filteredLength = 0
-    if (exclude.length > 0){
+    if (exclude.length > 0) {
         excludeNumbers = processFile(excludeContent);
         fileNumbers = fileNumbers.filter((el) => !excludeNumbers.includes(el));
         filteredLength += fileNumbers.length;
         const numberOfFilteredOut = initialLength - filteredLength;
         const totalLeft = initialLength - numberOfFilteredOut;
-        ClientsManager.logManager.info(`loaded ${totalLoaded} numbers, excluded ${numberOfFilteredOut} of them, ${totalLeft} numbers total`);    
+        ClientsManager.logManager.info(`loaded ${totalLoaded} numbers, excluded ${numberOfFilteredOut} of them, ${totalLeft} numbers total`);
     }
-    else
-    {
+    else {
         ClientsManager.logManager.info(`loaded ${totalLoaded} numbers`);
     }
     return fileNumbers;
