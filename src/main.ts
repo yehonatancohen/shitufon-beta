@@ -1,12 +1,18 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import { Main } from './shitufon/main';
 import path from 'path';
 import { Client, LocalAuth } from 'whatsapp-web.js';
+const log = require('electron-log');
+const { autoUpdater } = require('electron-updater');
 
 let mainWindow: BrowserWindow;
 let main: Main;
 const clients: { [id: string]: Client } = {}; // Store client instances
 const sessions: any[] = []; // Store session info
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
 
 async function createWindow() {
 
@@ -28,6 +34,7 @@ async function createWindow() {
 }
 
 app.on('ready', async () => {
+    autoUpdater.checkForUpdatesAndNotify();
     await createWindow();
 });
 
@@ -41,6 +48,30 @@ app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         await createWindow();
     }
+});
+
+autoUpdater.on('update-available', () => {
+    log.info('Update available.');
+    dialog.showMessageBox({
+        type: 'info',
+        title: 'Update Available',
+        message: 'A new version is available. Do you want to update now?',
+        buttons: ['Yes', 'Later']
+    }).then(result => {
+        if (result.response === 0) {
+            autoUpdater.downloadUpdate();
+        }
+    });
+});
+
+autoUpdater.on('update-downloaded', () => {
+    log.info('Update downloaded');
+    dialog.showMessageBox({
+        title: 'Install Updates',
+        message: 'Updates downloaded, application will be quit for update...'
+    }).then(() => {
+        autoUpdater.quitAndInstall();
+    });
 });
 
 ipcMain.on('request-client-qr', (event, clientId) => {
@@ -111,8 +142,8 @@ ipcMain.on('start-connection', async (event, clientId, mainNumber) => {
     await main.connect_client(clientId, mainNumber);
 });
 
-ipcMain.on('create-client', async (event, clientId) => {
-    await main.connect_client(clientId, "0586181898");
+ipcMain.on('create-client', async (event, clientId, mainNumber) => {
+    await main.connect_client(clientId, mainNumber);
 });
 
 // Handle pause/resume session

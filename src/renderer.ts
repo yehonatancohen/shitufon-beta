@@ -444,8 +444,9 @@ if (newClientForm) {
     newClientForm.addEventListener('submit', (event) => {
         event.preventDefault();
         const newClientId = (document.getElementById('new-client-id') as HTMLInputElement).value.trim();
+        const mainNumber = (document.getElementById('main-number') as HTMLInputElement).value.trim();
         if (newClientId) {
-            window.electron.createClient(newClientId);
+            window.electron.createClient(newClientId, mainNumber);
             window.electron.fetchClientList(renderClientList);
             window.electron.clientListUpdate(populateClientIDSelect);
         }

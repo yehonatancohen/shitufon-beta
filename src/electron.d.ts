@@ -2,7 +2,7 @@ interface ElectronAPI {
     fetchClientIds: (callback: (clientIds: string[]) => void) => void;
     fetchClientList: (callback: (clients: any[]) => void) => void;
     fetchSessionsList: (callback: (sessions: any[]) => void) => void;
-    createClient: (clientId: string) => void;
+    createClient: (clientId: string, mainNumber: string) => void;
     connectClient: (clientId: string, mainNumber: string) => void;
     clientListUpdate: (callback: (clients: any[]) => void) => void;
     sendForm: (data: any) => void;
