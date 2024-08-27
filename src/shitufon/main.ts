@@ -26,9 +26,8 @@ export class Main {
     public async init() {
         // Start all the clients
         this.get_clients();
-        for (let clientId of this.clientIds) {
-            await this.connect_client(clientId);
-        }
+        const promises = this.clientIds.map((clientId) => this.connect_client(clientId));
+        await Promise.all(promises);
     }
 
     public get_conntected_clients() {

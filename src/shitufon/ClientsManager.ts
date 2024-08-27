@@ -158,13 +158,10 @@ export class ClientsManager {
     }
 
     public async connectClients(clientIds: string[]){
-        let clients = [];
-        for (let clientId of clientIds){
-            console.log("Connecting client " + clientId);
-            let client = await this.connectClient(clientId);
-            ClientsManager.logManager.info(`Client ${clientId} connected`);
-            clients.push(client);
-        }
+        let clients: ClientController[] = [];
+        const promises = clientIds.map((clientId) => this.connectClient(clientId).then((connectedClient) => clients.push(connectedClient)));
+        await Promise.all(promises);
+        console.log(clients);
         return clients;
     }
 
@@ -183,6 +180,7 @@ export class ClientsManager {
         if (this.clients[clientId] != null && this.clients[clientId].clientObj.pupBrowser == null){  
             await client.connect();
         }
+        ClientsManager.logManager.info(`Client ${clientId} connected`);
         return client;
     }
 
