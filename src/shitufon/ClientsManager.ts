@@ -161,7 +161,6 @@ export class ClientsManager {
         let clients: ClientController[] = [];
         const promises = clientIds.map((clientId) => this.connectClient(clientId).then((connectedClient) => clients.push(connectedClient)));
         await Promise.all(promises);
-        console.log(clients);
         return clients;
     }
 

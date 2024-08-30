@@ -66,8 +66,16 @@ if (sendingForm) {
         const clientIdsElement = document.getElementById('client-ids') as HTMLSelectElement;
         const clientIds = Array.from(clientIdsElement.selectedOptions).map(option => option.value);
         const speed = (document.getElementById('speed') as HTMLSelectElement).value;
-        const selectedNumbers = $('#phone-numbers-grid').val();
         const messageBody = (document.getElementById('message-body') as HTMLTextAreaElement).value;
+        const selectedNumbers: any[] = [];
+        const checkboxes = document.querySelectorAll('.row-checkbox');
+    
+        checkboxes.forEach((checkbox) => {
+            const inputElcheckboxement = checkbox as HTMLInputElement;
+            if (inputElcheckboxement?.checked) {
+                selectedNumbers.push(inputElcheckboxement?.value);
+            }
+        });
 
         // Send data to the backend
         window.electron.startSession({ clientIds, speed, selectedNumbers, messageBody });
@@ -159,7 +167,6 @@ document.getElementById('upload-file-whitelist')?.addEventListener('change', (ev
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
         // Implement file reading and parsing logic here
-        console.log('File selected:', file.name);
     }
 });
 
@@ -174,7 +181,6 @@ document.getElementById('parse-input')?.addEventListener('click', () => {
 document.getElementById('save-parsed-numbers')?.addEventListener('click', () => {
     const selectedNumbers = Array.from(document.querySelectorAll('#parsed-numbers-list input[type="checkbox"]:checked'))
         .map(checkbox => (checkbox as HTMLInputElement).value);
-    console.log('Saving selected numbers:', selectedNumbers);
     // Implement save logic here
 });
 
@@ -199,7 +205,6 @@ document.getElementById('edit-whitelisted')?.addEventListener('click', () => {
 document.getElementById('save-whitelisted')?.addEventListener('click', () => {
     const whitelistedNumbers = Array.from(document.querySelectorAll('#whitelisted-list input[type="checkbox"]'))
         .map(checkbox => (checkbox as HTMLInputElement).value);
-    console.log('Saving whitelisted numbers:', whitelistedNumbers);
     // Implement save logic here
 
     // Toggle back to view mode

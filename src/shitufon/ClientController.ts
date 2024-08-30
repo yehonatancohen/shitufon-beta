@@ -27,7 +27,7 @@ export class ClientController {
 				type: 'remote',
 				remotePath: `https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/${wwebVersion}.html`,
 			},
-			puppeteer: {headless: false},
+			puppeteer: {headless: true},
 		});
 		this.connected = false;
 		this.messagingLevel = 0; // Initialize messagingLevel

@@ -3,17 +3,17 @@ import { BrowserWindow } from 'electron';
 export class LogManager {
     private mainWindow: BrowserWindow;
 
-    constructor(mainWindow: BrowserWindow) {
-        this.mainWindow = mainWindow;
+    constructor(_mainWindow: BrowserWindow) {
+        this.mainWindow = _mainWindow;
     }
 
     public info(message: string) {
         console.log(message);
-        this.mainWindow.webContents.send('log-info', message);
+        this.mainWindow.webContents.send('log', true, message);
     }
 
     public error(message: string) {
         console.log(message);
-        this.mainWindow.webContents.send('log-error', message);
+        this.mainWindow.webContents.send('log', false, message);
     }
 }

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, ipcRenderer } from 'electron';
 import { Main } from './shitufon/main';
 import path from 'path';
 import { Client, LocalAuth } from 'whatsapp-web.js';
@@ -77,12 +77,11 @@ autoUpdater.on('update-downloaded', () => {
 ipcMain.on('request-client-qr', (event, clientId) => {
 });
 
-ipcMain.on('log-info', (message) => {
-    log.info(message);
-});
-
-ipcMain.on('log-error', (message) => {
-    log.error(message);
+ipcMain.on('log', (event, info: boolean, message: string) => {
+    if (info === true) 
+        log.info(message);
+    else
+        log.error(message);
 });
 
 // Fetch client IDs
