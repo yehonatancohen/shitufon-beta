@@ -64,9 +64,9 @@ function processFile(allFilesContent: string[]): any[] {
 
     // Iterate over each file's content
     allFilesContent.forEach(content => {
-        const match = content.toString().match(/\b(?:\+972|0)?(?:-)?(?:5[0-9])(?:-)?(?:\d(?:-)?){7}\b(?![\w\s])/g);
+        const match = content.toString().match(/\b(?:\+?972[-\s]?)?(?:0?5[0-9]|5[0-9])[-\s]?[0-9]{3}[-\s]?[0-9]{4}/g);
         if (match && !allLines.has(match[0])) { // Avoid adding empty lines
-            let full = { mobile: convertPhoneNumber(match[0]), name: content[indexes.firstname].split(' ', 0), fullname: content[indexes.firstname] + ' ' + content[indexes.lastname], gender: content[indexes.gender] };
+            let full = { mobile: convertPhoneNumber(match[0]), name: content[indexes.firstname]?.split(' ', 0), fullname: content[indexes.firstname] + ' ' + content[indexes.lastname], gender: content[indexes.gender] };
             allLines.add(full);
         }
     });
