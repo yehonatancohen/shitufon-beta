@@ -19,7 +19,7 @@ export class ClientsManager {
         this.clients = {};
         this.groupsObj = [];
         this.userDataPath = userDataPath;
-        ClientsManager.logManager = new LogManager();
+        ClientsManager.logManager = new LogManager(mainWindow);
         ClientsManager.logManager.info("ClientsManager initialized");
     }
 

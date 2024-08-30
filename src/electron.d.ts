@@ -1,11 +1,10 @@
 interface ElectronAPI {
-    fetchClientIds: (callback: (clientIds: string[]) => void) => void;
     fetchClientList: (callback: (clients: any[]) => void) => void;
     fetchSessionsList: (callback: (sessions: any[]) => void) => void;
-    createClient: (clientId: string, mainNumber: string) => void;
+    fetchParsedFile: (callback: (numbers: any[]) => void) => void;
     connectClient: (clientId: string, mainNumber: string) => void;
     clientListUpdate: (callback: (clients: any[]) => void) => void;
-    sendForm: (data: any) => void;
+    startSession: (data: any) => void;
     sessionUpdate: (sessionId: string, status: string) => void;
     startConnection: (clientId: string) => void;
     pauseResumeSession: (clientId: string) => void;
@@ -16,8 +15,6 @@ interface ElectronAPI {
     statusUpdate: (callback: () => void) => void;
     clearNumbers: () => void;
     onConnected: (callback: () => void) => void;
-    fetchRunningSessions: (callback: (sessions: any[]) => void) => void;
-    fetchParsedFile: (callback: (numbers: any[]) => void) => void;
     removeClient: (clientId: string) => void;
 }
 

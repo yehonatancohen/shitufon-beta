@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import { Main } from './shitufon/main';
 import path from 'path';
 import { Client, LocalAuth } from 'whatsapp-web.js';
-const log = require('electron-log');
+import * as log from 'electron-log';
 const { autoUpdater } = require('electron-updater');
 
 let mainWindow: BrowserWindow;
@@ -77,6 +77,14 @@ autoUpdater.on('update-downloaded', () => {
 ipcMain.on('request-client-qr', (event, clientId) => {
 });
 
+ipcMain.on('log-info', (message) => {
+    log.info(message);
+});
+
+ipcMain.on('log-error', (message) => {
+    log.error(message);
+});
+
 // Fetch client IDs
 ipcMain.handle('fetch-client-ids', async () => {
     return Object.keys(clients);
@@ -101,7 +109,7 @@ ipcMain.on('clear-numbers', () => {
 });
 
 // Handle form submission
-ipcMain.on('submit-form', async (event, data) => {
+ipcMain.on('start-session', async (event, data) => {
     const { clientIds, speed, selectedNumbers, messageBody } = data;
     const rate = speed === 'slow' ? 15000 : speed === 'medium' ? 6000 : 3000; // milliseconds per message
     await main.startSession(clientIds, rate, selectedNumbers, messageBody);
