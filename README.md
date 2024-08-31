@@ -1,7 +1,3 @@
-Certainly! Here’s a draft of a README file for your `shitufon-beta` project:
-
----
-
 # Shitufon-Beta
 
 Welcome to **Shitufon-Beta**, an experimental platform designed to facilitate seamless and efficient communication for users leveraging the WhatsApp Web interface. This project serves as a beta version, focusing on providing advanced automation capabilities, session management, and multi-client handling within the WhatsApp ecosystem.
