@@ -42,6 +42,7 @@ export class MessagesSession extends Session {
     }
     
     private async send_messages(clientIds: string[], phone_numbers: string[], messages: string[]) {
+        ClientsManager.logManager.info(`Started messaging with ${clientIds}, numbers: ${phone_numbers}, sleeping: ${this.sleepTime}`)
         let current_messages = 0        
         const clients = [];
         for (let clientId of clientIds){

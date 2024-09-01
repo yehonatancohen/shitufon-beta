@@ -114,6 +114,13 @@ export class Main {
         await this.sessionManager.resumeSession(sessionId);
     }
 
+    public removeWhitelisted(numbers: string[]) {
+        const whitelistedNumbers = this.getWhitelisted();
+        const updatedNumbers = whitelistedNumbers.filter(number => !numbers.includes(number));
+        fs.writeFileSync(this.whitelistPath, updatedNumbers.join('\n'), 'utf-8');
+        this.removeWhitelistDuplicates();
+    }
+
     public whitelistNumbers(numbers: string[]) {
         const numbersString = numbers.join('\n');
         fs.appendFileSync(this.whitelistPath, numbersString, 'utf-8');

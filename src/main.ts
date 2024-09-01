@@ -100,6 +100,10 @@ ipcMain.on('excel-parsing', (event, file) => {
     return main.parseExcel(file);
 });
 
+ipcMain.on('remove-whitelisted-numbers', (event, numbers) => {
+    return main.removeWhitelisted(numbers);
+});
+
 ipcMain.on('whitelist-numbers', (event, numbers) => {
     return main.whitelistNumbers(numbers);
 });
@@ -111,7 +115,7 @@ ipcMain.on('clear-numbers', () => {
 // Handle form submission
 ipcMain.on('start-session', async (event, data) => {
     const { clientIds, speed, selectedNumbers, messageBody } = data;
-    const rate = speed === 'slow' ? 15000 : speed === 'medium' ? 6000 : 3000; // milliseconds per message
+    const rate = speed === 'slow' ? 15 : speed === 'medium' ? 6 : 3; // milliseconds per message
     await main.startSession(clientIds, rate, selectedNumbers, messageBody);
 });
 

@@ -53,11 +53,20 @@
         <!-- Whitelisted Numbers Section -->
         <div id="whitelisted-numbers" class="form-group">
             <h3>Whitelisted Numbers:</h3>
-            <div id="whitelisted-list" class="phone-numbers-grid">
-                <!-- Whitelisted numbers will be dynamically populated here -->
+            <div class="table-container">
+                <table id="whitelisted-table" class="styled-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="select-all-checkbox-whitelisted"></th>
+                            <th>Mobile Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be dynamically populated here -->
+                    </tbody>
+                </table>
             </div>
-            <button class="styled-button" id="edit-whitelisted">Edit</button>
-            <button class="styled-button" id="save-whitelisted" style="display: none;">Save</button>
+            <button class="styled-button" id="remove-whitelisted">Remove Selected</button>
         </div>
     </div>
 

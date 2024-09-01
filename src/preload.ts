@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld('electron', {
     },
     startSession: (data: any) => ipcRenderer.send('start-session', data),
     whitelistNumbers: (data: any) => ipcRenderer.send('whitelist-numbers', data),
+    removeWhitelisted: (data: any) => ipcRenderer.send('remove-whitelisted-numbers', data),
     parseExcel: (file: any) => ipcRenderer.send('excel-parsing', file),
     startConnection: (clientId: string) => ipcRenderer.send('start-connection', clientId),
     pauseResumeSession: (clientId: string) => ipcRenderer.send('pause-resume-session', clientId),

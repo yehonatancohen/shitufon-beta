@@ -167,6 +167,21 @@ window.electron.onConnected(() => {
     connectionStatus.style.display = 'block';
 });
 
+document.getElementById('remove-whitelisted')?.addEventListener('click', () => {
+    const selectedNumbers: any[] = [];
+    const checkboxes = document.querySelectorAll('.row-checkbox');
+
+    checkboxes.forEach((checkbox) => {
+        const inputElcheckboxement = checkbox as HTMLInputElement;
+        if (inputElcheckboxement?.checked) {
+            selectedNumbers.push(inputElcheckboxement?.value);
+        }
+    });
+
+    window.electron.removeWhitelisted(selectedNumbers);
+    fetchAndRenderer();
+});
+
 document.getElementById('whitelist-numbers')?.addEventListener('click', () => {
     const selectedNumbers: any[] = [];
     const checkboxes = document.querySelectorAll('.row-checkbox');

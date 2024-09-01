@@ -16,15 +16,37 @@ export function populateClientIDSelect(clientIds: string[]) {
 }
 
 export function populateWhitelist(numbers: string[]) {
-    const whitelist = document.getElementById('whitelisted-list') as HTMLSelectElement;
-    if (whitelist) {
-        whitelist.innerHTML = ''; // Clear existing options
+    const tableBody = document.querySelector('#whitelisted-table tbody');
+    const selectAllCheckbox = document.getElementById('select-all-checkbox-whitelisted') as HTMLInputElement;
 
-        numbers?.forEach(number => {
-            const option = document.createElement('option');
-            option.value = number;
-            option.textContent = number;
-            whitelist.appendChild(option);
+    if (tableBody) {
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        numbers.forEach((item, index) => {
+            const row = document.createElement('tr');
+
+            // Checkbox
+            const cellCheckbox = document.createElement('td');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = item;
+            checkbox.classList.add('row-checkbox');
+            cellCheckbox.appendChild(checkbox);
+            row.appendChild(cellCheckbox);
+
+            // Mobile Number
+            const cellMobile = document.createElement('td');
+            cellMobile.textContent = item;
+            row.appendChild(cellMobile);
+
+            tableBody.appendChild(row);
+        });
+
+        selectAllCheckbox.addEventListener('change', () => {
+            const checkboxes = document.querySelectorAll('.row-checkbox') as NodeListOf<HTMLInputElement>;
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
         });
     }
 }
