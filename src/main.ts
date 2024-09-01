@@ -154,7 +154,7 @@ ipcMain.on('start-connection', async (event, clientId, mainNumber) => {
     await main.connect_client(clientId, mainNumber);
 });
 
-ipcMain.on('create-client', async (event, clientId, mainNumber) => {
+ipcMain.on('connect-client', async (event, clientId, mainNumber) => {
     await main.connect_client(clientId, mainNumber);
 });
 
