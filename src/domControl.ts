@@ -15,6 +15,42 @@ export function populateClientIDSelect(clientIds: string[]) {
     }
 }
 
+export function populateWhitelist(numbers: string[]) {
+    const tableBody = document.querySelector('#whitelisted-table tbody');
+    const selectAllCheckbox = document.getElementById('select-all-checkbox-whitelisted') as HTMLInputElement;
+
+    if (tableBody) {
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        numbers.forEach((item, index) => {
+            const row = document.createElement('tr');
+
+            // Checkbox
+            const cellCheckbox = document.createElement('td');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = item;
+            checkbox.classList.add('row-checkbox');
+            cellCheckbox.appendChild(checkbox);
+            row.appendChild(cellCheckbox);
+
+            // Mobile Number
+            const cellMobile = document.createElement('td');
+            cellMobile.textContent = item;
+            row.appendChild(cellMobile);
+
+            tableBody.appendChild(row);
+        });
+
+        selectAllCheckbox.addEventListener('change', () => {
+            const checkboxes = document.querySelectorAll('.row-checkbox') as NodeListOf<HTMLInputElement>;
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+        });
+    }
+}
+
 // Function to render client list
 export function renderClientList(clients: any[]) {
     const clientList = document.getElementById('client-list');
@@ -164,6 +200,42 @@ export function populatePhoneNumbers(data: { mobile: string, name: string, fullN
             cellGender.textContent = item.gender;
             row.appendChild(cellGender);
 
+
+            tableBody.appendChild(row);
+        });
+
+        selectAllCheckbox.addEventListener('change', () => {
+            const checkboxes = document.querySelectorAll('.row-checkbox') as NodeListOf<HTMLInputElement>;
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+        });
+    }
+}
+
+export function populateExcelTable(data: { mobile: string, name: string, fullName: string, gender: string }[] = []) {
+    const tableBody = document.querySelector('#parsed-numbers-table tbody');
+    const selectAllCheckbox = document.getElementById('select-all-checkbox') as HTMLInputElement;
+
+    if (tableBody) {
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        data.forEach((item, index) => {
+            const row = document.createElement('tr');
+
+            // Checkbox
+            const cellCheckbox = document.createElement('td');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = item.mobile;
+            checkbox.classList.add('row-checkbox');
+            cellCheckbox.appendChild(checkbox);
+            row.appendChild(cellCheckbox);
+
+            // Mobile Number
+            const cellMobile = document.createElement('td');
+            cellMobile.textContent = item.mobile;
+            row.appendChild(cellMobile);
 
             tableBody.appendChild(row);
         });

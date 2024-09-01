@@ -4,7 +4,10 @@ interface ElectronAPI {
     fetchParsedFile: (callback: (numbers: any[]) => void) => void;
     connectClient: (clientId: string, mainNumber: string) => void;
     clientListUpdate: (callback: (clients: any[]) => void) => void;
+    whitelistListUpdate: (callback: (whitelist: any[]) => void) => void;
     startSession: (data: any) => void;
+    whitelistNumbers: (data: any) => void;
+    removeWhitelisted: (data: any) => void;
     sessionUpdate: (sessionId: string, status: string) => void;
     startConnection: (clientId: string) => void;
     pauseResumeSession: (clientId: string) => void;

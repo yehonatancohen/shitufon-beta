@@ -2,6 +2,7 @@ import * as XLSX from 'xlsx';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ClientsManager } from './ClientsManager';
+import { get } from 'jquery';
 
 function convertPhoneNumber(number: string) {
     // Implement phone number conversion logic here
@@ -33,28 +34,14 @@ function parseExcelFile(fileData: string): any[] {
     return parsedData;
 }
 
-function findSessionFiles(sessionIds: string[]) {
-    let logFiles: string[] = [];
-    const logFolderPath = path.join(__dirname, '..', 'logs');
-    const files = fs.readdirSync(logFolderPath);
-    files.forEach(file => {
-        const content = fs.readFileSync(path.join(logFolderPath, file), 'utf8');
-        const containsSessionId = sessionIds.some(sessionId => content.includes(sessionId));
-        if (containsSessionId) {
-            logFiles.push(path.join('logs', file));
-        }
-    });
-    return logFiles;
-}
-
 function locatePositions(allFilesContent: any[]) {
     const headerRow = allFilesContent[0];
     const first_name_titles = ['firstname', 'first name', 'first-name', 'first_name', 'name'];
     const last_name_titles = ['lastname', 'last name', 'last-name', 'last_name'];
     const gender_titles = ['gender', 'מגדר'];
-    const firstnameIndex = headerRow.indexOf(first_name_titles.find(title => headerRow.includes(title)));
-    const lastnameIndex = headerRow.indexOf(last_name_titles.find(title => headerRow.includes(title)));
-    const genderIndex = headerRow.indexOf(gender_titles.find(title => headerRow.includes(title)));
+    const firstnameIndex = headerRow?.indexOf(first_name_titles.find(title => headerRow.includes(title)));
+    const lastnameIndex = headerRow?.indexOf(last_name_titles.find(title => headerRow.includes(title)));
+    const genderIndex = headerRow?.indexOf(gender_titles.find(title => headerRow.includes(title)));
     return { firstname: firstnameIndex, lastname: lastnameIndex, gender: genderIndex };
 }
 
@@ -76,20 +63,13 @@ function processFile(allFilesContent: string[]): any[] {
     return combinedContent;
 }
 
-function getFilesFromFolder(folderName: string) {
-    const files = fs.readdirSync(folderName);
-    const filePaths = files.map(file => path.join(folderName, file));
-    return filePaths;
-}
-
-function extractPhoneNumbers(filesContent: any, exclude: string[], sessionIds: string[] = []): any[] {
+function extractPhoneNumbers(filesContent: any, exclude: string): any[] {
     let allFilesContent: any[] = [];
     let excludeContent: any[] = [];
-    exclude.push(...findSessionFiles(sessionIds));
     allFilesContent = parseExcelFile(filesContent)
     let fileNumbers = processFile(allFilesContent);
     let totalLoaded = fileNumbers.length;
-    let excludeNumbers: any[];
+    let excludeNumbers: any[] = getWhitelistedNumbers(exclude);
     const initialLength = fileNumbers.length;
     let filteredLength = 0
     if (exclude.length > 0) {
@@ -106,4 +86,14 @@ function extractPhoneNumbers(filesContent: any, exclude: string[], sessionIds: s
     return fileNumbers;
 }
 
-export { extractPhoneNumbers, getFilesFromFolder };
+function getWhitelistedNumbers(filePath: string) {
+    let whitelist: string[] = [];
+    try {
+        whitelist = fs.readFileSync(filePath, 'utf-8').split('\n').map(client => client.trim());
+    } catch (error) {
+        fs.writeFileSync(filePath, '', 'utf-8');
+    }
+    return whitelist;
+}
+
+export { extractPhoneNumbers };

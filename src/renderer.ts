@@ -21,12 +21,7 @@ function fetchAndRenderer() {
     window.electron.fetchClientList(domControl. renderClientList);
     window.electron.fetchSessionsList(domControl.renderSessionsList);
     window.electron.clientListUpdate(domControl.populateClientIDSelect);
-}
-
-function updateSummary(selectedNumbers: string[]) {
-    if (!totalNumbersSpan || !selectedNumbersSpan) return;
-    totalNumbersSpan.textContent = `Total Numbers: undefined`;
-    selectedNumbersSpan.textContent = `Selected Numbers: ${selectedNumbers.length}`;
+    window.electron.whitelistListUpdate(domControl.populateWhitelist);
 }
 
 if (btnSending && btnConnecting && tabSending && tabConnecting && btnClients && tabClients) {
@@ -80,11 +75,6 @@ if (sendingForm) {
         // Send data to the backend
         window.electron.startSession({ clientIds, speed, selectedNumbers, messageBody });
     });
-    document.getElementById('phone-numbers-grid')?.addEventListener('change', () => {
-        const selectedNumbers = Array.from(document.querySelectorAll('#phone-numbers-grid input[type="checkbox"]:checked'))
-            .map(checkbox => (checkbox as HTMLInputElement).value);
-        updateSummary(selectedNumbers);
-    });
 }
 
 function removeClient(clientId: string) {
@@ -94,6 +84,20 @@ function removeClient(clientId: string) {
         fetchAndRenderer();
     }
 }
+
+document.getElementById('upload-file-whitelist')?.addEventListener('change', event => {
+    const input = event.target as HTMLInputElement;
+    const file = input.files ? input.files[0] : null;
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const data = reader.result as string;
+            window.electron.parseExcel(data);
+            window.electron.fetchParsedFile(domControl.populateExcelTable);
+        };
+        reader.readAsArrayBuffer(file);
+    }
+});
 
 document.getElementById('excel-file')?.addEventListener('change', event => {
     const input = event.target as HTMLInputElement;
@@ -163,11 +167,35 @@ window.electron.onConnected(() => {
     connectionStatus.style.display = 'block';
 });
 
-document.getElementById('upload-file-whitelist')?.addEventListener('change', (event) => {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-        // Implement file reading and parsing logic here
-    }
+document.getElementById('remove-whitelisted')?.addEventListener('click', () => {
+    const selectedNumbers: any[] = [];
+    const checkboxes = document.querySelectorAll('.row-checkbox');
+
+    checkboxes.forEach((checkbox) => {
+        const inputElcheckboxement = checkbox as HTMLInputElement;
+        if (inputElcheckboxement?.checked) {
+            selectedNumbers.push(inputElcheckboxement?.value);
+        }
+    });
+
+    window.electron.removeWhitelisted(selectedNumbers);
+    fetchAndRenderer();
+});
+
+document.getElementById('whitelist-numbers')?.addEventListener('click', () => {
+    const selectedNumbers: any[] = [];
+    const checkboxes = document.querySelectorAll('.row-checkbox');
+
+    checkboxes.forEach((checkbox) => {
+        const inputElcheckboxement = checkbox as HTMLInputElement;
+        if (inputElcheckboxement?.checked) {
+            selectedNumbers.push(inputElcheckboxement?.value);
+        }
+    });
+    
+    // Whitelist numbers
+    window.electron.whitelistNumbers(selectedNumbers);
+    fetchAndRenderer();
 });
 
 // Function to handle text input
@@ -181,7 +209,8 @@ document.getElementById('parse-input')?.addEventListener('click', () => {
 document.getElementById('save-parsed-numbers')?.addEventListener('click', () => {
     const selectedNumbers = Array.from(document.querySelectorAll('#parsed-numbers-list input[type="checkbox"]:checked'))
         .map(checkbox => (checkbox as HTMLInputElement).value);
-    // Implement save logic here
+    // update whitelist
+    fetchAndRenderer();
 });
 
 // Function to toggle edit mode

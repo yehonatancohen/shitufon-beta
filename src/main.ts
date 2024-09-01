@@ -74,9 +74,6 @@ autoUpdater.on('update-downloaded', () => {
     });
 });
 
-ipcMain.on('request-client-qr', (event, clientId) => {
-});
-
 ipcMain.on('log', (event, info: boolean, message: string) => {
     if (info === true) 
         log.info(message);
@@ -103,6 +100,14 @@ ipcMain.on('excel-parsing', (event, file) => {
     return main.parseExcel(file);
 });
 
+ipcMain.on('remove-whitelisted-numbers', (event, numbers) => {
+    return main.removeWhitelisted(numbers);
+});
+
+ipcMain.on('whitelist-numbers', (event, numbers) => {
+    return main.whitelistNumbers(numbers);
+});
+
 ipcMain.on('clear-numbers', () => {
     return main.numbersData = [];
 });
@@ -110,7 +115,7 @@ ipcMain.on('clear-numbers', () => {
 // Handle form submission
 ipcMain.on('start-session', async (event, data) => {
     const { clientIds, speed, selectedNumbers, messageBody } = data;
-    const rate = speed === 'slow' ? 15000 : speed === 'medium' ? 6000 : 3000; // milliseconds per message
+    const rate = speed === 'slow' ? 15 : speed === 'medium' ? 6 : 3; // milliseconds per message
     await main.startSession(clientIds, rate, selectedNumbers, messageBody);
 });
 
@@ -136,6 +141,10 @@ ipcMain.handle('fetch-client-list', async () => {
     return main.get_clients_status();
 });
 
+ipcMain.handle('fetch-whitelist-list', async () => {
+    return main.getWhitelisted();
+});
+
 ipcMain.handle('client-list-update', async () => {
     return main.get_conntected_clients();
 });
@@ -149,7 +158,7 @@ ipcMain.on('start-connection', async (event, clientId, mainNumber) => {
     await main.connect_client(clientId, mainNumber);
 });
 
-ipcMain.on('create-client', async (event, clientId, mainNumber) => {
+ipcMain.on('connect-client', async (event, clientId, mainNumber) => {
     await main.connect_client(clientId, mainNumber);
 });
 
