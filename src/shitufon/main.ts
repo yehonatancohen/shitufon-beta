@@ -14,6 +14,7 @@ export class Main {
     private mainWindow: BrowserWindow;
     private mainNumber = '';
     private clientsPath = '';
+    private whitelistPath = '';
     constructor(mainWindow: BrowserWindow, userDataPath: string) {
         this.mainWindow = mainWindow;
         this.clientIds = [];
@@ -21,6 +22,7 @@ export class Main {
         this.mainWindow.webContents.send('fetch-client-list');
         this.sessionManager = new SessionManager(this.clientManager, this.mainNumber, []);
         this.clientsPath = path.join(userDataPath, 'clients.txt');
+        this.whitelistPath = path.join(userDataPath, 'whitelist.txt');
     }
     
     public async init() {
@@ -63,7 +65,7 @@ export class Main {
 
     public parseExcel(file: any) {
         //data: { mobile: string, name: string, fullName: string }[]
-        const number = extractPhoneNumbers(file, [], []);
+        const number = extractPhoneNumbers(file, this.whitelistPath);
         this.numbersData.push(...number);
     }
 
@@ -97,7 +99,7 @@ export class Main {
     }
 
     public async startSession(clientdIds: string[], rate: number, numbers: string[], messageBody: string) {
-        await this.sessionManager.createSession("Messages", clientdIds, numbers, [messageBody]);
+        await this.sessionManager.createSession("Messages", clientdIds, numbers, [messageBody], rate);
     }
 
     public async stopSession(sessionId: string) {
@@ -112,12 +114,34 @@ export class Main {
         await this.sessionManager.resumeSession(sessionId);
     }
 
+    public whitelistNumbers(numbers: string[]) {
+        const numbersString = numbers.join('\n');
+        fs.appendFileSync(this.whitelistPath, numbersString, 'utf-8');
+        this.removeWhitelistDuplicates();
+    }
+
+    private removeWhitelistDuplicates() {
+        const numbers = this.getWhitelisted();
+        const uniqueNumbers = [...new Set(numbers)];
+        fs.writeFileSync(this.whitelistPath, uniqueNumbers.join('\n'), 'utf-8');
+    }
+
+    public getWhitelisted() {
+        try {
+            fs.mkdirSync(path.dirname(this.whitelistPath), { recursive: true });
+            const numbers = fs.readFileSync(this.whitelistPath, 'utf-8').split('\n').map(number => number.trim());
+            return numbers;
+        } catch (error) {
+            fs.writeFileSync(this.whitelistPath, '', 'utf-8');
+            return [];
+        }
+    }
+
     public async remove_client(clientId: string) {
         if (!this.clientIds.includes(clientId)) {
             return;
         }
         this.clientIds = this.clientIds.filter(client => client !== clientId);
-        this.mainWindow.webContents.send('fetch-client-list', clientId);
         fs.readFile(this.clientsPath, 'utf-8', (err, data) => {
             if (err) {
                 console.error('Error reading clients from file:', err);
@@ -133,5 +157,6 @@ export class Main {
             });
         });
         await this.clientManager.removeClient(clientId);
+        this.mainWindow.webContents.send('fetch-client-list');
     }
 }

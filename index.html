@@ -36,15 +36,20 @@
                 placeholder="Enter numbers, one per line"></textarea>
             <button class="styled-button" id="parse-input">Parse Numbers</button>
         </div>
-
-        <!-- Parsed Numbers Section -->
-        <div id="parsed-numbers" class="form-group">
-            <h3>Parsed Numbers:</h3>
-            <!-- Parsed numbers will be dynamically populated here -->
-            <div id="parsed-numbers-list" class="phone-numbers-grid"></div>
-            <button class="styled-button" id="save-parsed-numbers">Save Selected</button>
+        <div class="table-container">
+            <table id="parsed-numbers-table" class="styled-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="select-all-checkbox"></th>
+                        <th>Mobile Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be dynamically populated here -->
+                </tbody>
+            </table>
         </div>
-
+        <button class="styled-button" id="whitelist-numbers">Whitelist numbers</button>
         <!-- Whitelisted Numbers Section -->
         <div id="whitelisted-numbers" class="form-group">
             <h3>Whitelisted Numbers:</h3>

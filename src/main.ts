@@ -74,9 +74,6 @@ autoUpdater.on('update-downloaded', () => {
     });
 });
 
-ipcMain.on('request-client-qr', (event, clientId) => {
-});
-
 ipcMain.on('log', (event, info: boolean, message: string) => {
     if (info === true) 
         log.info(message);
@@ -101,6 +98,10 @@ ipcMain.handle('fetch-running-sessions', async () => {
 
 ipcMain.on('excel-parsing', (event, file) => {
     return main.parseExcel(file);
+});
+
+ipcMain.on('whitelist-numbers', (event, numbers) => {
+    return main.whitelistNumbers(numbers);
 });
 
 ipcMain.on('clear-numbers', () => {
@@ -134,6 +135,10 @@ ipcMain.on('session-update', async (event, sesssionId, status) => {
 ipcMain.handle('fetch-client-list', async () => {
     mainWindow.webContents.send('client-list-update');
     return main.get_clients_status();
+});
+
+ipcMain.handle('fetch-whitelist-list', async () => {
+    return main.getWhitelisted();
 });
 
 ipcMain.handle('client-list-update', async () => {

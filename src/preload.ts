@@ -10,12 +10,16 @@ contextBridge.exposeInMainWorld('electron', {
     fetchParsedFile: (callback: (numbers: any[]) => void) => {
         ipcRenderer.invoke('fetch-parsed-file').then(callback);
     },
+    whitelistListUpdate: (callback: (numbers: any[]) => void) => {
+        ipcRenderer.invoke('fetch-whitelist-list').then(callback);
+    },
     connectClient: (clientId: string, mainNumber: string) => ipcRenderer.send('connect-client', clientId, mainNumber),
     clearNumbers: () => ipcRenderer.send('clear-numbers'),
     clientListUpdate: (callback: (clients: any[]) => void) => {
         ipcRenderer.invoke('client-list-update').then(callback);
     },
     startSession: (data: any) => ipcRenderer.send('start-session', data),
+    whitelistNumbers: (data: any) => ipcRenderer.send('whitelist-numbers', data),
     parseExcel: (file: any) => ipcRenderer.send('excel-parsing', file),
     startConnection: (clientId: string) => ipcRenderer.send('start-connection', clientId),
     pauseResumeSession: (clientId: string) => ipcRenderer.send('pause-resume-session', clientId),
