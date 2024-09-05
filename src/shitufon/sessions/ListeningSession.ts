@@ -32,7 +32,7 @@ export class ListeningSession extends Session {
 
     public async startSession() {
         await super.startSession();
-        await this.add_message_listener();
+        //await this.add_message_listener();
     }
 
     private async redirect_message(clientId: string, message: string | Message, phone_number: string) {

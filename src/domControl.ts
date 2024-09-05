@@ -163,7 +163,7 @@ export function renderSessionsList(sessions: any[]) {
 
 export function populatePhoneNumbers(data: { mobile: string, name: string, fullName: string, gender: string }[] = []) {
     const tableBody = document.querySelector('#sending-table tbody');
-    const selectAllCheckbox = document.getElementById('select-all-checkbox') as HTMLInputElement;
+    const selectAllCheckbox = document.getElementById('select-all-checkbox sending') as HTMLInputElement;
 
     if (tableBody) {
         tableBody.innerHTML = ''; // Clear existing rows
