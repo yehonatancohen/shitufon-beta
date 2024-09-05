@@ -128,7 +128,8 @@ export function renderSessionsList(sessions: any[]) {
           </div>
           <div class="session-info">
               <p>Time Since Start: <span class="timer"></span></p>
-              <p>Messages Sent: <span>${sessionData.sentMessage}</span></p>
+              <p>Messages sent: <span>${sessionData.sentMessage}</span></p>
+              <p>Messages left: <span>${sessionData.toSendMessage}</span></p>
               <p>Status: <span>${sessionData.status}</span></p>
           </div>
           <div class="session-controls">

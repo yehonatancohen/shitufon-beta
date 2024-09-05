@@ -9,6 +9,7 @@ export class MessagesSession extends Session {
     protected toSendMessage: MessageData[];
     protected sentMessages: MessageData[] = [];
     protected phoneNumbers: string[];
+    public runningTime: number;
     private messageBody: string[];
     private sleepTime: number;
     private every: number;
@@ -22,6 +23,7 @@ export class MessagesSession extends Session {
         this.sleepTime = sleepTime;
         this.every = every;
         this.wait = wait;
+        this.runningTime = 0;
         this.clientIds = clientIds;
         this.messageBody = messageBody;
         this.phoneNumbers = phoneNumbers;
@@ -34,6 +36,10 @@ export class MessagesSession extends Session {
     public async init() {
         await this.initClients(this.clientIds);
         this.initMessages();
+    }
+
+    public override getToSendMessageLength(): number {
+        return this.toSendMessage.length;
     }
 
     public async startSession() {

@@ -83,6 +83,10 @@ export class Session {
         await this.sessionManager.sessionUpdated();
     }
 
+    public getToSendMessageLength() {
+        return 0;
+    }
+
     public async startSession()
     {
         // start session

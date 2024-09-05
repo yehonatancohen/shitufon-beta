@@ -55,6 +55,7 @@ export class SessionManager
                 clients: session.getClientIds(),
                 startTime: session.getStartTime(),
                 sentMessage: sentMessages,
+                toSendMessage: session.getToSendMessageLength(),
                 status: session.getStatus(),
                 pausedTime: session.pausedTime(),
             };
