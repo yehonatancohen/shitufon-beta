@@ -37,6 +37,7 @@
             <button class="styled-button" id="parse-input">Parse Numbers</button>
         </div>
         <div class="table-container">
+            <div id="selectedCount-whitelist-parse">Selected Rows: 0</div>
             <table id="parsed-numbers-table" class="styled-table">
                 <thead>
                     <tr>
@@ -54,6 +55,7 @@
         <div id="whitelisted-numbers" class="form-group">
             <h3>Whitelisted Numbers:</h3>
             <div class="table-container">
+                <div id="selectedCount-whitelist">Selected Rows: 0</div>
                 <table id="whitelisted-table" class="styled-table">
                     <thead>
                         <tr>
@@ -92,6 +94,7 @@
                 <label for="excel-file" class="custom-button">Upload Excel File</label>
                 <input type="file" id="excel-file" class="form-control" accept=".xlsx, .xls, .csv, .txt">
             </div>
+            <div id="selectedCount-sending">Selected Numbers: 0</div>
             <div class="table-container">
                 <table id="sending-table" class="styled-table">
                     <thead>

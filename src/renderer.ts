@@ -63,7 +63,7 @@ if (sendingForm) {
         const speed = (document.getElementById('speed') as HTMLSelectElement).value;
         const messageBody = (document.getElementById('message-body') as HTMLTextAreaElement).value;
         const selectedNumbers: any[] = [];
-        const checkboxes = document.querySelectorAll('.row-checkbox');
+        const checkboxes = document.querySelectorAll('.row-checkbox-sending');
     
         checkboxes.forEach((checkbox) => {
             const inputElcheckboxement = checkbox as HTMLInputElement;
@@ -169,7 +169,7 @@ window.electron.onConnected(() => {
 
 document.getElementById('remove-whitelisted')?.addEventListener('click', () => {
     const selectedNumbers: any[] = [];
-    const checkboxes = document.querySelectorAll('.row-checkbox');
+    const checkboxes = document.querySelectorAll('.row-checkbox-whitelist');
 
     checkboxes.forEach((checkbox) => {
         const inputElcheckboxement = checkbox as HTMLInputElement;
@@ -184,7 +184,7 @@ document.getElementById('remove-whitelisted')?.addEventListener('click', () => {
 
 document.getElementById('whitelist-numbers')?.addEventListener('click', () => {
     const selectedNumbers: any[] = [];
-    const checkboxes = document.querySelectorAll('.row-checkbox');
+    const checkboxes = document.querySelectorAll('.row-checkbox-whitelist-parse');
 
     checkboxes.forEach((checkbox) => {
         const inputElcheckboxement = checkbox as HTMLInputElement;
@@ -250,6 +250,10 @@ function initWindow() {
     (window as any).connectClient = connectClient;
     (window as any).removeClient = removeClient;
     (window as any).showQRCode = showQRCode;
+    (window as any).sessionUpdate = (sessionId: string, status: string) => {
+        window.electron.sessionUpdate(sessionId, status);
+        fetchAndRenderer();
+    }
 }
 
 initWindow();

@@ -1,3 +1,4 @@
+import { session } from 'electron';
 import QRCode from 'qrcode';
 
 // Populate client ID select box
@@ -18,6 +19,7 @@ export function populateClientIDSelect(clientIds: string[]) {
 export function populateWhitelist(numbers: string[]) {
     const tableBody = document.querySelector('#whitelisted-table tbody');
     const selectAllCheckbox = document.getElementById('select-all-checkbox-whitelisted') as HTMLInputElement;
+    const selectedCountDiv = document.getElementById('selectedCount-whitelist') as HTMLDivElement;
 
     if (tableBody) {
         tableBody.innerHTML = ''; // Clear existing rows
@@ -30,8 +32,12 @@ export function populateWhitelist(numbers: string[]) {
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = item;
-            checkbox.classList.add('row-checkbox');
+            checkbox.classList.add('row-checkbox-whitelist');
             cellCheckbox.appendChild(checkbox);
+            cellCheckbox.addEventListener('change', () => {
+                const selectedCount = document.querySelectorAll('.row-checkbox-whitelist:checked').length;
+                selectedCountDiv.textContent = selectedCount.toString();
+            });
             row.appendChild(cellCheckbox);
 
             // Mobile Number
@@ -43,7 +49,7 @@ export function populateWhitelist(numbers: string[]) {
         });
 
         selectAllCheckbox.addEventListener('change', () => {
-            const checkboxes = document.querySelectorAll('.row-checkbox') as NodeListOf<HTMLInputElement>;
+            const checkboxes = document.querySelectorAll('.row-checkbox-whitelist') as NodeListOf<HTMLInputElement>;
             checkboxes.forEach(checkbox => {
                 checkbox.checked = selectAllCheckbox.checked;
             });
@@ -127,14 +133,14 @@ export function renderSessionsList(sessions: any[]) {
               <p>Type: <span>${sessionData.type}</span></p>
           </div>
           <div class="session-info">
-              <p>Time Since Start: <span class="timer"></span></p>
+              <p>Time Since Start: <span class="timer-${sessionData.id}"></span></p>
               <p>Messages sent: <span>${sessionData.sentMessage}</span></p>
               <p>Messages left: <span>${sessionData.toSendMessage}</span></p>
               <p>Status: <span>${sessionData.status}</span></p>
           </div>
           <div class="session-controls">
-              <button onclick="pauseResumeSession('${sessionData.clientId}')">${sessionData.isPaused ? 'Resume' : 'Pause'}</button>
-              <button onclick="stopSession('${sessionData.clientId}')">Stop</button>
+              <button onclick="window.sessionUpdate('${sessionData.id}', '${sessionData.isPaused ? 'resumed' : 'paused'}')">${sessionData.isPaused ? 'Resume' : 'Pause'}</button>
+              <button onclick="window.sessionUpdate('${sessionData.id}', 'stopped')">Stop</button>
           </div>
           <div class="client-ids">
               ${sessionData.clients.map((client: any) => `<span class="client-id">${client}</span>`).join('')}
@@ -143,9 +149,13 @@ export function renderSessionsList(sessions: any[]) {
 
         container.appendChild(panel);
 
-        const timerElement = panel.querySelector('.timer');
+        const timerElement = panel.querySelector(`.timer-${sessionData.id}`);
         setInterval(() => {
-            updateTimer(timerElement, sessionData.startTime, sessionData.status, sessionData.pausedTime);
+            if (!sessionData.isPaused) {
+                updateTimer(timerElement, sessionData.startTime, sessionData.status, sessionData.pausedTime);
+            } else {
+                updateTimer(timerElement, sessionData.startTime, sessionData.status, sessionData.paused);
+            }
         }, 1000);
 
         panel.querySelector('.btn-start')?.addEventListener('click', () => {
@@ -165,6 +175,7 @@ export function renderSessionsList(sessions: any[]) {
 export function populatePhoneNumbers(data: { mobile: string, name: string, fullName: string, gender: string }[] = []) {
     const tableBody = document.querySelector('#sending-table tbody');
     const selectAllCheckbox = document.getElementById('select-all-checkbox sending') as HTMLInputElement;
+    const selectedCountDiv = document.getElementById('selectedCount-sending') as HTMLDivElement;
 
     if (tableBody) {
         tableBody.innerHTML = ''; // Clear existing rows
@@ -177,8 +188,12 @@ export function populatePhoneNumbers(data: { mobile: string, name: string, fullN
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = item.mobile;
-            checkbox.classList.add('row-checkbox');
+            checkbox.classList.add('row-checkbox-sending');
             cellCheckbox.appendChild(checkbox);
+            cellCheckbox.addEventListener('change', () => {
+                const selectedCount = document.querySelectorAll('.row-checkbox-sending:checked').length;
+                selectedCountDiv.textContent = 'Selected Numbers: ' + selectedCount.toString();
+            });
             row.appendChild(cellCheckbox);
 
             // Mobile Number
@@ -206,10 +221,12 @@ export function populatePhoneNumbers(data: { mobile: string, name: string, fullN
         });
 
         selectAllCheckbox.addEventListener('change', () => {
-            const checkboxes = document.querySelectorAll('.row-checkbox') as NodeListOf<HTMLInputElement>;
+            const checkboxes = document.querySelectorAll('.row-checkbox-sending') as NodeListOf<HTMLInputElement>;
             checkboxes.forEach(checkbox => {
                 checkbox.checked = selectAllCheckbox.checked;
             });
+            const selectedCount = document.querySelectorAll('.row-checkbox-sending:checked').length;
+            selectedCountDiv.textContent = 'Selected Numbers: ' + selectedCount.toString();
         });
     }
 }
@@ -217,6 +234,7 @@ export function populatePhoneNumbers(data: { mobile: string, name: string, fullN
 export function populateExcelTable(data: { mobile: string, name: string, fullName: string, gender: string }[] = []) {
     const tableBody = document.querySelector('#parsed-numbers-table tbody');
     const selectAllCheckbox = document.getElementById('select-all-checkbox') as HTMLInputElement;
+    const selectedCountDiv = document.getElementById('selectedCount-whitelist-parse') as HTMLDivElement;
 
     if (tableBody) {
         tableBody.innerHTML = ''; // Clear existing rows
@@ -229,8 +247,12 @@ export function populateExcelTable(data: { mobile: string, name: string, fullNam
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = item.mobile;
-            checkbox.classList.add('row-checkbox');
+            checkbox.classList.add('row-checkbox-whitelist-parse');
             cellCheckbox.appendChild(checkbox);
+            cellCheckbox.addEventListener('change', () => {
+                const selectedCount = document.querySelectorAll('.row-checkbox-whitelist-parse:checked').length;
+                selectedCountDiv.textContent = selectedCount.toString();
+            });
             row.appendChild(cellCheckbox);
 
             // Mobile Number
@@ -242,7 +264,7 @@ export function populateExcelTable(data: { mobile: string, name: string, fullNam
         });
 
         selectAllCheckbox.addEventListener('change', () => {
-            const checkboxes = document.querySelectorAll('.row-checkbox') as NodeListOf<HTMLInputElement>;
+            const checkboxes = document.querySelectorAll('.row-checkbox-whitelist-parse') as NodeListOf<HTMLInputElement>;
             checkboxes.forEach(checkbox => {
                 checkbox.checked = selectAllCheckbox.checked;
             });

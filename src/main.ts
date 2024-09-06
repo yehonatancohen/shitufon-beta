@@ -125,6 +125,7 @@ ipcMain.on('remove-client', async (event, clientId) => {
 });
 
 ipcMain.on('session-update', async (event, sesssionId, status) => {
+    console.log('Session update:', sesssionId, status);
     if (status === 'stopped') {
         return await main.stopSession(sesssionId);
     } else if (status === 'paused') {

@@ -58,6 +58,7 @@ export class SessionManager
                 toSendMessage: session.getToSendMessageLength(),
                 status: session.getStatus(),
                 pausedTime: session.pausedTime(),
+                isPaused: session.getStatus() == "Paused"
             };
         }
         return sessionDictionary;
