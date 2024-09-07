@@ -485,3 +485,19 @@ button[type="submit"]:hover,
   accent-color: #007BFF; /* Use a blue color for the checkbox */
   border-radius: 4px; /* Add rounded corners to the checkbox */
 }
+
+.wait-settings {
+    display: none;
+    margin-left: 10px;
+}
+
+.container {
+    display: inline-flex;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+input[type="number"] {
+    width: 100px;
+    margin: 0 5px;
+}

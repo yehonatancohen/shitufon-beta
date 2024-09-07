@@ -181,6 +181,7 @@ export function populatePhoneNumbers(data: { mobile: string, name: string, fullN
         tableBody.innerHTML = ''; // Clear existing rows
 
         data.forEach((item, index) => {
+            console.log(item);
             const row = document.createElement('tr');
 
             // Checkbox

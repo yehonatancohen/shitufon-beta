@@ -114,9 +114,9 @@ ipcMain.on('clear-numbers', () => {
 
 // Handle form submission
 ipcMain.on('start-session', async (event, data) => {
-    const { clientIds, speed, selectedNumbers, messageBody } = data;
+    const { clientIds, speed, selectedNumbers, messageBody, sleepEvery, sleepTime } = data;
     const rate = speed === 'slow' ? 15 : speed === 'medium' ? 6 : 3; // milliseconds per message
-    await main.startSession(clientIds, rate, selectedNumbers, messageBody);
+    await main.startSession(clientIds, rate, selectedNumbers, messageBody, sleepEvery, sleepTime);
 });
 
 ipcMain.on('remove-client', async (event, clientId) => {

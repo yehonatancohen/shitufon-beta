@@ -61,6 +61,8 @@ if (sendingForm) {
         const clientIdsElement = document.getElementById('client-ids') as HTMLSelectElement;
         const clientIds = Array.from(clientIdsElement.selectedOptions).map(option => option.value);
         const speed = (document.getElementById('speed') as HTMLSelectElement).value;
+        const sleepEvery = (document.getElementById('message-count') as HTMLInputElement).value;
+        const sleepTime = (document.getElementById('wait-time') as HTMLInputElement).value;
         const messageBody = (document.getElementById('message-body') as HTMLTextAreaElement).value;
         const selectedNumbers: any[] = [];
         const checkboxes = document.querySelectorAll('.row-checkbox-sending');
@@ -73,7 +75,7 @@ if (sendingForm) {
         });
 
         // Send data to the backend
-        window.electron.startSession({ clientIds, speed, selectedNumbers, messageBody });
+        window.electron.startSession({ clientIds, speed, selectedNumbers, messageBody, sleepEvery, sleepTime });
     });
 }
 
@@ -139,6 +141,20 @@ if (newClientForm) {
     });
 }
 
+const enableWaitFieldCheckbox = document.getElementById('enableWaitField') as HTMLInputElement;
+if (enableWaitFieldCheckbox) {
+    const waitFieldsDiv = document.getElementById('waitFields') as HTMLDivElement;
+    waitFieldsDiv.style.display = 'none';
+
+    // Show or hide the waitFields based on the checkbox state
+    enableWaitFieldCheckbox.addEventListener('change', function () {
+        if (enableWaitFieldCheckbox.checked) {
+            waitFieldsDiv.style.display = 'block';
+        } else {
+            waitFieldsDiv.style.display = 'none';
+        }
+    });
+}
 // Function to connect a client
 function connectClient(clientId: string) {
     const mainNumber = (document.getElementById('main-number') as HTMLInputElement).value;

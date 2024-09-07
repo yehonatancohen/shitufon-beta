@@ -65,8 +65,8 @@ export class Main {
 
     public parseExcel(file: any) {
         //data: { mobile: string, name: string, fullName: string }[]
-        const number = extractPhoneNumbers(file, this.whitelistPath);
-        this.numbersData.push(...number);
+        const numbers = extractPhoneNumbers(file, this.whitelistPath);
+        this.numbersData = numbers; // Reset the numbers every parse
     }
 
     public get_clients() {
@@ -98,8 +98,8 @@ export class Main {
         await this.sessionManager.createSession("Listening", [clientId], [], this.mainNumber, clientId);
     }
 
-    public async startSession(clientdIds: string[], rate: number, numbers: string[], messageBody: string) {
-        await this.sessionManager.createSession("Messages", clientdIds, numbers, [messageBody], rate);
+    public async startSession(clientdIds: string[], rate: number, numbers: string[], messageBody: string, sleepEvery?: number, sleepTime?: number) {
+        await this.sessionManager.createSession("Messages", clientdIds, numbers, [messageBody], rate, sleepEvery, sleepTime);
     }
 
     public async stopSession(sessionId: string) {

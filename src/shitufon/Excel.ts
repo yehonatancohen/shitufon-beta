@@ -53,7 +53,11 @@ function processFile(allFilesContent: string[]): any[] {
     allFilesContent.forEach(content => {
         const match = content.toString().match(/\b(?:\+?972[-\s]?)?(?:0?5[0-9]|5[0-9])[-\s]?[0-9]{3}[-\s]?[0-9]{4}/g);
         if (match && !allLines.has(match[0])) { // Avoid adding empty lines
-            let full = { mobile: convertPhoneNumber(match[0]), name: content[indexes.firstname]?.split(' ', 0), fullname: content[indexes.firstname] + ' ' + content[indexes.lastname], gender: content[indexes.gender] };
+            var fullName = content[indexes.firstname] + ' ' + content[indexes.lastname];
+            if (fullName == 'undefined undefined') {
+                fullName = '';
+            }
+            let full = { mobile: convertPhoneNumber(match[0]), name: content[indexes.firstname], fullName: fullName, gender: content[indexes.gender] };
             allLines.add(full);
         }
     });
