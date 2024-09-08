@@ -18,7 +18,7 @@ const selectedNumbersSpan = document.getElementById('selected-numbers');
 const qrCodes: { [clientId: string]: string } = {};
 
 function fetchAndRenderer() {
-    window.electron.fetchClientList(domControl. renderClientList);
+    window.electron.fetchClientList(domControl.renderClientList);
     window.electron.fetchSessionsList(domControl.renderSessionsList);
     window.electron.clientListUpdate(domControl.populateClientIDSelect);
     window.electron.whitelistListUpdate(domControl.populateWhitelist);

@@ -114,6 +114,7 @@ export function renderSessionsList(sessions: any[]) {
     container.innerHTML = ''; // Clear existing panels
     Object.values(sessions).forEach(sessionData => {
         if (sessionData.type === 'Listening') return;
+        if (sessionData.clients.length === 0) return;
         const panel = document.createElement('div');
         panel.classList.add('session-panel');
 

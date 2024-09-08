@@ -97,7 +97,13 @@ export class Session {
 
     public getClientIds()
     {
-        return this.clientIds;
+        let activeClients: string[] = [];
+        for (let client in this.clients)
+        {
+            if (this.clients[client].connected)
+                activeClients.push(client);
+        }
+        return activeClients;
     }
 
     public pausedTime() 
