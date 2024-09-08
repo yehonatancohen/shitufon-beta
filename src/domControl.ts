@@ -131,6 +131,7 @@ export function renderSessionsList(sessions: any[]) {
           <div class="session-header">
               <h4>Session ID: <span>${sessionData.id}</span></h4>
               <p>Type: <span>${sessionData.type}</span></p>
+              <button class="close-btn" onclick="removeSession('${sessionData.id}')">X</button>
           </div>
           <div class="session-info">
               <p>Time Since Start: <span class="timer-${sessionData.id}"></span></p>
@@ -146,6 +147,8 @@ export function renderSessionsList(sessions: any[]) {
               ${sessionData.clients.map((client: any) => `<span class="client-id">${client}</span>`).join('')}
           </div>
       `;
+
+        panel.setAttribute('data-session-id', sessionData.id);
 
         container.appendChild(panel);
 
@@ -273,7 +276,7 @@ export function populateExcelTable(data: { mobile: string, name: string, fullNam
     }
 }
 
-export function showQr(clientId: string, qrCodes: {[clientId: string]: string}) {
+export function showQr(clientId: string, qrCodes: { [clientId: string]: string }) {
     var qrContainer = document.getElementById("qr-container-".concat(clientId));
     if (!qrContainer) {
         console.error('QR container not found');

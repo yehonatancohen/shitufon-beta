@@ -330,7 +330,8 @@ button[type="submit"]:hover,
     /* Darker shade on hover */
 }
 
-#excel-file, #upload-file-whitelist {
+#excel-file,
+#upload-file-whitelist {
     display: none;
 }
 
@@ -432,7 +433,8 @@ button[type="submit"]:hover,
     position: sticky;
     top: 0;
     z-index: 1;
-    text-align: center; /* Center align the checkbox */
+    text-align: center;
+    /* Center align the checkbox */
 }
 
 .styled-table tbody tr {
@@ -473,17 +475,22 @@ button[type="submit"]:hover,
 
 .styled-table th:first-child,
 .styled-table td:first-child {
-  width: 40px; /* Fixed width for the checkbox column */
-  text-align: center;
+    width: 40px;
+    /* Fixed width for the checkbox column */
+    text-align: center;
 }
 
 .styled-table th input[type="checkbox"],
 .styled-table td input[type="checkbox"] {
-  width: 22px; /* Bigger size for the checkbox */
-  height: 22px; /* Bigger size for the checkbox */
-  cursor: pointer;
-  accent-color: #007BFF; /* Use a blue color for the checkbox */
-  border-radius: 4px; /* Add rounded corners to the checkbox */
+    width: 22px;
+    /* Bigger size for the checkbox */
+    height: 22px;
+    /* Bigger size for the checkbox */
+    cursor: pointer;
+    accent-color: #007BFF;
+    /* Use a blue color for the checkbox */
+    border-radius: 4px;
+    /* Add rounded corners to the checkbox */
 }
 
 .wait-settings {
@@ -500,4 +507,25 @@ button[type="submit"]:hover,
 input[type="number"] {
     width: 100px;
     margin: 0 5px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    background-color: darkred;
+}
+
+.session-header {
+    position: relative;
 }

@@ -257,6 +257,14 @@ document.getElementById('save-whitelisted')?.addEventListener('click', () => {
     document.getElementById('save-whitelisted')!.style.display = 'none';
 });
 
+function removeSession(sessionId: string) {
+    const sessionElement = document.querySelector(`[data-session-id="${sessionId}"]`);
+    if (sessionElement) {
+        sessionElement.remove();
+        window.electron.sessionUpdate(sessionId, "stopped");
+    }
+}
+
 // Init
 fetchAndRenderer();
 
@@ -266,6 +274,7 @@ function initWindow() {
     (window as any).connectClient = connectClient;
     (window as any).removeClient = removeClient;
     (window as any).showQRCode = showQRCode;
+    (window as any).removeSession = removeSession;
     (window as any).sessionUpdate = (sessionId: string, status: string) => {
         window.electron.sessionUpdate(sessionId, status);
         fetchAndRenderer();
