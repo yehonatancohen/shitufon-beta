@@ -48,7 +48,6 @@ export class MessagesSession extends Session {
     }
     
     private async send_messages(clientIds: string[], phone_numbers: string[], messages: string[]) {
-        ClientsManager.logManager.info(`Started messaging with ${clientIds}, numbers: ${phone_numbers}, sleeping: ${this.sleepTime}`)
         let current_messages = 0        
         const clients = [];
         for (let clientId of clientIds){
@@ -80,7 +79,7 @@ export class MessagesSession extends Session {
             this.toSendMessage.splice(current_messages, 1);
             await sleep(this.sleepTime);
             current_messages++;
-            if (current_messages % this.every == 0) {
+            if (current_messages % this.every == 0 && this.every != 0) {
                 ClientsManager.logManager.info(`Sent ${current_messages} messages, sleeping for ${this.wait} seconds`);
                 await sleep(this.wait);
             }

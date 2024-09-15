@@ -2,6 +2,7 @@ import { start } from 'repl';
 import { ClientController } from '../ClientController';
 import { ClientsManager } from '../ClientsManager';
 import { SessionManager } from './SessionManager';
+import { connected } from 'process';
 
 export enum SessionStatus {
     STARTED,
@@ -97,10 +98,11 @@ export class Session {
 
     public getClientIds()
     {
+        let connectedClients = this.cm.get_connected_client_ids();
         let activeClients: string[] = [];
-        for (let client in this.clients)
+        for (let client of this.clientIds)
         {
-            if (this.clients[client].connected)
+            if (connectedClients.includes(client))
                 activeClients.push(client);
         }
         return activeClients;
@@ -157,6 +159,7 @@ export class Session {
         let clients = await this.connectClients(clientIds.filter(clientId => dissconnectedClients.includes(clientId)));
         for (let client of clients) {
             this.clients[client.getClientId()] = client;
+            this.clients[client.getClientId()].connected = true;
         }
     }
 

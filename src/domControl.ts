@@ -113,8 +113,11 @@ export function renderSessionsList(sessions: any[]) {
     if (!container) return;
     container.innerHTML = ''; // Clear existing panels
     Object.values(sessions).forEach(sessionData => {
-        if (sessionData.type === 'Listening') return;
-        if (sessionData.clients.length === 0) return;
+        if (sessionData.type === 'Listening'
+            || sessionData.clients.length === 0 
+            || sessionData.status == "Stopped"
+            || sessionData.status == "Done"
+        ) return;
         const panel = document.createElement('div');
         panel.classList.add('session-panel');
 
@@ -185,7 +188,6 @@ export function populatePhoneNumbers(data: { mobile: string, name: string, fullN
         tableBody.innerHTML = ''; // Clear existing rows
 
         data.forEach((item, index) => {
-            console.log(item);
             const row = document.createElement('tr');
 
             // Checkbox

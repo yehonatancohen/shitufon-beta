@@ -96,8 +96,8 @@
                 </label>
             
                 <div id="waitFields" class="wait-settings">
-                    wait <input type="number" id="wait-time" min="1" value="1"> seconds every
-                    <input type="number" id="message-count" min="1" value="1"> messages
+                    wait <input type="number" id="wait-time" min="0" value="0"> seconds every
+                    <input type="number" id="message-count" min="0" value="0"> messages
                 </div>
             </div>
             <br>
@@ -146,8 +146,6 @@
             <div class="form-group">
                 <label for="new-client-id">Create New Client ID</label>
                 <input type="text" id="new-client-id" required>
-                <label for="main-number">Main Number</label>
-                <input type="text" id="main-number" required>
             </div>
             <br>
             <button type="submit" id="create-client" class="styled-button">Create Client</button>

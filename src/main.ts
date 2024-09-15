@@ -115,7 +115,8 @@ ipcMain.on('clear-numbers', () => {
 // Handle form submission
 ipcMain.on('start-session', async (event, data) => {
     const { clientIds, speed, selectedNumbers, messageBody, sleepEvery, sleepTime } = data;
-    const rate = speed === 'slow' ? 15 : speed === 'medium' ? 6 : 3; // milliseconds per message
+    console.log('speed: ', speed, ' every: ', sleepEvery, ' sleep for: ', sleepTime, ' seconds');
+    const rate = speed === 'slow' ? 15 : speed === 'medium' ? 6 : 3; // seconds per message
     await main.startSession(clientIds, rate, selectedNumbers, messageBody, sleepEvery, sleepTime);
 });
 
