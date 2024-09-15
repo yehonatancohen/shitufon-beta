@@ -133,7 +133,7 @@ if (newClientForm) {
     newClientForm.addEventListener('submit', (event) => {
         event.preventDefault();
         const newClientId = (document.getElementById('new-client-id') as HTMLInputElement).value.trim();
-        const mainNumber = (document.getElementById('main-number') as HTMLInputElement).value.trim();
+        const mainNumber = "";
         if (newClientId) {
             window.electron.connectClient(newClientId, mainNumber);
             fetchAndRenderer();
