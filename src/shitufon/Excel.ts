@@ -4,7 +4,7 @@ import * as path from 'path';
 import { ClientsManager } from './ClientsManager';
 import { get } from 'jquery';
 
-function convertPhoneNumber(number: string) {
+export function convertPhoneNumber(number: string) {
     // Implement phone number conversion logic here
     number = number.replace(/\W/g, '');
     let convertedNumbers;
@@ -69,7 +69,6 @@ function processFile(allFilesContent: string[]): any[] {
 
 function extractPhoneNumbers(filesContent: any, exclude: string): any[] {
     let allFilesContent: any[] = [];
-    let excludeContent: any[] = [];
     allFilesContent = parseExcelFile(filesContent)
     let fileNumbers = processFile(allFilesContent);
     let totalLoaded = fileNumbers.length;
@@ -77,8 +76,8 @@ function extractPhoneNumbers(filesContent: any, exclude: string): any[] {
     const initialLength = fileNumbers.length;
     let filteredLength = 0
     if (exclude.length > 0) {
-        excludeNumbers = processFile(excludeContent);
-        fileNumbers = fileNumbers.filter((el) => !excludeNumbers.includes(el));
+        console.log('excluding: ' + excludeNumbers);
+        fileNumbers = fileNumbers.filter((el) => !excludeNumbers.includes(el.mobile));
         filteredLength += fileNumbers.length;
         const numberOfFilteredOut = initialLength - filteredLength;
         const totalLeft = initialLength - numberOfFilteredOut;

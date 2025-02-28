@@ -198,6 +198,22 @@ document.getElementById('remove-whitelisted')?.addEventListener('click', () => {
     fetchAndRenderer();
 });
 
+document.getElementById('remove-sending')?.addEventListener('click', () => {
+    const selectedNumbers: any[] = [];
+    const checkboxes = document.querySelectorAll('.row-checkbox-sending');
+
+    checkboxes.forEach((checkbox) => {
+        const inputElcheckboxement = checkbox as HTMLInputElement;
+        if (inputElcheckboxement?.checked) {
+            selectedNumbers.push(inputElcheckboxement?.value);
+        }
+    });
+
+    window.electron.removeSending(selectedNumbers);
+    window.electron.fetchParsedFile(domControl.populatePhoneNumbers);
+    fetchAndRenderer();
+});
+
 document.getElementById('whitelist-numbers')?.addEventListener('click', () => {
     const selectedNumbers: any[] = [];
     const checkboxes = document.querySelectorAll('.row-checkbox-whitelist-parse');

@@ -5,14 +5,15 @@ import { extractPhoneNumbers } from './Excel'
 import { ClientsManager } from './ClientsManager';
 import { SessionManager } from './sessions/SessionManager';
 import fs from 'fs';
+import { convertPhoneNumber } from './Excel';
 
 export class Main {
-    public numbersData: {}[] = [];
+    public numbersData: { mobile: string, name: string, fullName: string }[] = [];
     private clientIds: string[];
     private clientManager: ClientsManager;
     private sessionManager: SessionManager;
     private mainWindow: BrowserWindow;
-    private mainNumber = '';
+    private mainNumber = '972586181898';
     private clientsPath = '';
     private whitelistPath = '';
     constructor(mainWindow: BrowserWindow, userDataPath: string) {
@@ -121,9 +122,17 @@ export class Main {
         this.removeWhitelistDuplicates();
     }
 
+    public removeSending(numbers: string[]) {
+        const updatedNumbers = this.numbersData.filter(data => !numbers.includes(data.mobile));
+        this.numbersData = updatedNumbers;
+    }
+
     public whitelistNumbers(numbers: string[]) {
-        const numbersString = numbers.join('\n');
-        fs.appendFileSync(this.whitelistPath, numbersString, 'utf-8');
+        const formattedNumbers = numbers.map(number => convertPhoneNumber(number));
+        const existingContent = fs.readFileSync(this.whitelistPath, 'utf-8');
+        const numbersString = formattedNumbers.join('\n');
+        const contentToWrite = existingContent ? `\n${numbersString}` : numbersString;
+        fs.appendFileSync(this.whitelistPath, contentToWrite, 'utf-8');
         this.removeWhitelistDuplicates();
     }
 

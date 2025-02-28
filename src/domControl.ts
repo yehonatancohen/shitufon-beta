@@ -36,7 +36,7 @@ export function populateWhitelist(numbers: string[]) {
             cellCheckbox.appendChild(checkbox);
             cellCheckbox.addEventListener('change', () => {
                 const selectedCount = document.querySelectorAll('.row-checkbox-whitelist:checked').length;
-                selectedCountDiv.textContent = selectedCount.toString();
+                selectedCountDiv.textContent = 'Selected Rows: ' + selectedCount.toString();
             });
             row.appendChild(cellCheckbox);
 
@@ -53,6 +53,8 @@ export function populateWhitelist(numbers: string[]) {
             checkboxes.forEach(checkbox => {
                 checkbox.checked = selectAllCheckbox.checked;
             });
+            const selectedCount = document.querySelectorAll('.row-checkbox-whitelist:checked').length;
+            selectedCountDiv.textContent = 'Selected Rows: ' + selectedCount.toString();
         });
     }
 }
@@ -240,7 +242,7 @@ export function populatePhoneNumbers(data: { mobile: string, name: string, fullN
 
 export function populateExcelTable(data: { mobile: string, name: string, fullName: string, gender: string }[] = []) {
     const tableBody = document.querySelector('#parsed-numbers-table tbody');
-    const selectAllCheckbox = document.getElementById('select-all-checkbox') as HTMLInputElement;
+    const selectAllCheckbox = document.getElementById('select-all-checkbox-parse') as HTMLInputElement;
     const selectedCountDiv = document.getElementById('selectedCount-whitelist-parse') as HTMLDivElement;
 
     if (tableBody) {
@@ -258,7 +260,7 @@ export function populateExcelTable(data: { mobile: string, name: string, fullNam
             cellCheckbox.appendChild(checkbox);
             cellCheckbox.addEventListener('change', () => {
                 const selectedCount = document.querySelectorAll('.row-checkbox-whitelist-parse:checked').length;
-                selectedCountDiv.textContent = selectedCount.toString();
+            selectedCountDiv.textContent = 'Selected Rows: ' + selectedCount.toString();
             });
             row.appendChild(cellCheckbox);
 
@@ -275,6 +277,8 @@ export function populateExcelTable(data: { mobile: string, name: string, fullNam
             checkboxes.forEach(checkbox => {
                 checkbox.checked = selectAllCheckbox.checked;
             });
+            const selectedCount = document.querySelectorAll('.row-checkbox-whitelist-parse:checked').length;
+            selectedCountDiv.textContent = 'Selected Rows: ' + selectedCount.toString();
         });
     }
 }
@@ -372,22 +376,42 @@ export function showClientInfo(clientId: string) {
 
 // Function to populate parsed numbers
 export function populateParsedNumbers(numbers: string[]) {
-    const parsedNumbersContainer = document.getElementById('parsed-numbers-list');
-    if (parsedNumbersContainer) {
-        parsedNumbersContainer.innerHTML = ''; // Clear existing numbers
+    const tableBody = document.querySelector('#parsed-numbers-table tbody');
+    const selectAllCheckbox = document.getElementById('select-all-checkbox-parse') as HTMLInputElement;
+    const selectedCountDiv = document.getElementById('selectedCount-whitelist-parse') as HTMLDivElement;
 
-        numbers.forEach(number => {
-            const label = document.createElement('label');
-            const div = document.createElement('div');
-            div.className = 'phone-number';
+    if (tableBody) {
+        tableBody.innerHTML = ''; // Clear existing rows
 
+        numbers.forEach((item, index) => {
+            const row = document.createElement('tr');
+
+            // Checkbox
+            const cellCheckbox = document.createElement('td');
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.value = number;
+            checkbox.value = item;
+            checkbox.classList.add('row-checkbox-parse');
+            cellCheckbox.appendChild(checkbox);
+            cellCheckbox.addEventListener('change', () => {
+                const selectedCount = document.querySelectorAll('.row-checkbox-parse:checked').length;
+                selectedCountDiv.textContent = selectedCount.toString();
+            });
+            row.appendChild(cellCheckbox);
 
-            div.appendChild(checkbox);
-            div.appendChild(document.createTextNode(number));
-            parsedNumbersContainer.appendChild(div);
+            // Mobile Number
+            const cellMobile = document.createElement('td');
+            cellMobile.textContent = item;
+            row.appendChild(cellMobile);
+
+            tableBody.appendChild(row);
+        });
+
+        selectAllCheckbox.addEventListener('change', () => {
+            const checkboxes = document.querySelectorAll('.row-checkbox-parse') as NodeListOf<HTMLInputElement>;
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
         });
     }
 }

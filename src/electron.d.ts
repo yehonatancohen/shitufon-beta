@@ -8,6 +8,7 @@ interface ElectronAPI {
     startSession: (data: any) => void;
     whitelistNumbers: (data: any) => void;
     removeWhitelisted: (data: any) => void;
+    removeSending: (data: any) => void;
     sessionUpdate: (sessionId: string, status: string) => void;
     startConnection: (clientId: string) => void;
     pauseResumeSession: (clientId: string) => void;

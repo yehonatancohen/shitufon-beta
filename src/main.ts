@@ -104,6 +104,10 @@ ipcMain.on('remove-whitelisted-numbers', (event, numbers) => {
     return main.removeWhitelisted(numbers);
 });
 
+ipcMain.on('remove-sending', (event, numbers) => {
+    return main.removeSending(numbers);
+});
+
 ipcMain.on('whitelist-numbers', (event, numbers) => {
     return main.whitelistNumbers(numbers);
 });
